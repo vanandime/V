@@ -78,28 +78,28 @@
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
-        <!-- Sidebar Navigation (Collapsible with smooth width & transform transition) -->
-        <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transition-all duration-300 ease-in-out shadow-2xl md:shadow-none overflow-hidden shrink-0">
-            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a] min-w-[18rem]">
+        <!-- Sidebar Navigation (Desktop Only / Hidden on Mobile by default) -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-600/30">
                         SC
                     </div>
                     <span class="font-bold text-lg tracking-tight text-white">SmartCore</span>
                 </div>
-                <!-- Close Button -->
-                <button id="sidebar-close" class="text-zinc-400 hover:text-white p-1">
+                <!-- Close Button for Mobile -->
+                <button id="sidebar-close" class="md:hidden text-zinc-400 hover:text-white p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- Navigation Links Container -->
-            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto min-w-[18rem]">
+            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
                 <!-- Dynamic Navigation Rendered Here -->
             </nav>
 
             <!-- Sidebar Footer / Status -->
-            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40 min-w-[18rem]">
+            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40">
                 <div class="flex items-center justify-between text-xs text-zinc-400">
                     <span>Storage Status</span>
                     <span id="storage-indicator" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">Optimal</span>
@@ -117,10 +117,10 @@
         <!-- Main Wrapper -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#000000]">
             
-            <!-- Sleek Header -->
-            <header class="h-16 ig-glass flex items-center justify-between px-4 md:px-8 z-10">
+            <!-- Sleek Header (Persistent Elements) -->
+            <header class="h-16 ig-glass flex items-center justify-between px-4 md:px-8 z-10 shrink-0">
                 <div class="flex items-center space-x-3 md:space-x-4 min-w-0">
-                    <button id="sidebar-toggle" class="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0" title="Toggle Sidebar">
+                    <button id="sidebar-toggle" class="md:hidden p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <h1 id="page-title" class="text-sm md:text-base font-semibold tracking-tight text-white truncate">Dashboard Overview</h1>
@@ -146,14 +146,14 @@
         </div>
     </div>
 
-    <!-- Instagram-style Bottom Navigation Bar for Mobile (Using matching icons) -->
+    <!-- Instagram-style Bottom Navigation Bar for Mobile -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 h-16 ig-glass flex items-center justify-around px-4 z-40 border-t border-[#27272a]" style="background: rgba(9, 9, 11, 0.95);">
         <button onclick="switchTab('dashboard')" class="flex flex-col items-center justify-center text-zinc-400 hover:text-white transition-smooth" id="bottom-nav-dashboard">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[10px] mt-1 font-medium">Dashboard</span>
         </button>
         <button onclick="switchTab('management')" class="flex flex-col items-center justify-center text-zinc-400 hover:text-white transition-smooth" id="bottom-nav-management">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
             <span class="text-[10px] mt-1 font-medium">Management</span>
         </button>
     </div>
@@ -352,7 +352,6 @@
             currentTab: 'dashboard',
             searchQuery: '',
             lastSyncTime: null,
-            sidebarOpen: true,
             githubConfig: {
                 owner: '',
                 repo: '',
@@ -361,7 +360,7 @@
                 token: 'Ghp_Y2Nze7x9V3QAkbGNgtFBVRzKeNgnCv0sxnc5'
             },
             navItems: [
-                { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
+                { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-16zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-16z"/></svg>' },
                 { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
             ],
             items: [
@@ -434,7 +433,7 @@
                 const contentData = JSON.stringify({
                     items: appState.items,
                     updatedAt: new Date().toISOString(),
-                    version: '1.9'
+                    version: '1.7'
                 }, null, 2);
 
                 const base64Content = btoa(unescape(encodeURIComponent(contentData)));
@@ -515,37 +514,14 @@
             appState.currentTab = tabId;
             saveStateToStorage();
             renderAll();
-            if (window.innerWidth < 768) toggleSidebar(false);
+            toggleMobileSidebar(false);
         }
 
         function renderAll() {
-            renderNavigation();
             renderWorkspace();
             updateStorageIndicator();
             updateSyncBadge('synced', appState.lastSyncTime ? 'Synced' : 'Ready');
             updateBottomNavActiveState();
-            applySidebarState();
-        }
-
-        function applySidebarState() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            if (!sidebar) return;
-
-            if (appState.sidebarOpen) {
-                sidebar.style.width = '18rem';
-                sidebar.style.transform = 'translateX(0)';
-                if (window.innerWidth < 768 && backdrop) backdrop.classList.remove('hidden');
-            } else {
-                sidebar.style.width = '0rem';
-                sidebar.style.transform = 'translateX(-100%)';
-                if (backdrop) backdrop.classList.add('hidden');
-            }
-        }
-
-        function toggleSidebar(forceState) {
-            appState.sidebarOpen = forceState !== undefined ? forceState : !appState.sidebarOpen;
-            applySidebarState();
         }
 
         function updateBottomNavActiveState() {
@@ -560,35 +536,6 @@
                 btnDash.className = 'flex flex-col items-center justify-center text-zinc-400 hover:text-white transition-smooth';
                 btnMgmt.className = 'flex flex-col items-center justify-center text-brand-500 transition-smooth';
             }
-        }
-
-        function renderNavigation() {
-            const navContainer = document.getElementById('nav-links');
-            const template = document.getElementById('nav-item-template');
-            if (!navContainer || !template) return;
-
-            navContainer.innerHTML = '';
-            appState.navItems.forEach(item => {
-                const clone = template.content.cloneNode(true);
-                const link = clone.querySelector('.nav-item');
-                const iconWrapper = clone.querySelector('.icon-wrapper');
-                const labelSpan = clone.querySelector('span:nth-child(2)');
-
-                iconWrapper.innerHTML = item.icon;
-                labelSpan.textContent = item.label;
-
-                if (appState.currentTab === item.id) {
-                    link.className = 'nav-item flex items-center space-x-3 px-3.5 py-3 rounded-xl font-medium text-white bg-brand-600/20 border border-brand-500/30 transition-smooth group';
-                    iconWrapper.className = 'icon-wrapper text-brand-500';
-                }
-
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    switchTab(item.id);
-                });
-
-                navContainer.appendChild(clone);
-            });
         }
 
         function renderWorkspace() {
@@ -721,17 +668,54 @@
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
+        function toggleMobileSidebar(show) {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (!sidebar || !backdrop) return;
+            
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             loadStateFromStorage();
+            
+            // Render nav-items statically once
+            const navContainer = document.getElementById('nav-links');
+            const template = document.getElementById('nav-item-template');
+            if (navContainer && template) {
+                navContainer.innerHTML = '';
+                appState.navItems.forEach(item => {
+                    const clone = template.content.cloneNode(true);
+                    const link = clone.querySelector('.nav-item');
+                    const iconWrapper = clone.querySelector('.icon-wrapper');
+                    const labelSpan = clone.querySelector('span:nth-child(2)');
+
+                    iconWrapper.innerHTML = item.icon;
+                    labelSpan.textContent = item.label;
+
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        switchTab(item.id);
+                    });
+                    navContainer.appendChild(clone);
+                });
+            }
+
             renderAll();
 
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarClose = document.getElementById('sidebar-close');
             const backdrop = document.getElementById('sidebar-backdrop');
 
-            if (sidebarToggle) sidebarToggle.addEventListener('click', () => toggleSidebar());
-            if (sidebarClose) sidebarClose.addEventListener('click', () => toggleSidebar(false));
-            if (backdrop) backdrop.addEventListener('click', () => toggleSidebar(false));
+            if (sidebarToggle) sidebarToggle.addEventListener('click', () => toggleMobileSidebar(true));
+            if (sidebarClose) sidebarClose.addEventListener('click', () => toggleMobileSidebar(false));
+            if (backdrop) backdrop.addEventListener('click', () => toggleMobileSidebar(false));
 
             document.getElementById('btn-close-modal')?.addEventListener('click', closeModal);
             document.getElementById('btn-cancel-modal')?.addEventListener('click', closeModal);
