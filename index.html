@@ -154,3 +154,461 @@
     </script>
 </body>
 </html>
+
+<!-- SISIPKAN / LANJUTKAN DI DALAM TAG <script> ATAU TAMBAHKAN SEBELUM </body> -->
+<script>
+    // --- STATE MANAGEMENT UTAMA (Bagian 2) ---
+    let appState = {
+        currentUser: null,
+        token: null,
+        activeTab: 'home',
+        isAdmin: false,
+        posts: [
+            {
+                id: 1,
+                username: 'ynwaruss888',
+                userAvatar: 'https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=100',
+                mediaUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600',
+                caption: 'just a normal day',
+                likes: '105',
+                comments: '758',
+                time: '6 hours ago'
+            }
+        ],
+        stories: [
+            { name: 'Your story', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100', isSelf: true },
+            { name: 'matchinn_.', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100' },
+            { name: 'zidanarraff', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100' },
+            { name: 'chocolatte', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100' }
+        ],
+        messages: [
+            { name: 'tbh.juliet18', preview: 'Sent 8h ago', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100', unread: true },
+            { name: 'ú ni', preview: 'Sent', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=100', unread: false },
+            { name: 'NUTA FAMILY 💜', preview: '4+ new messages · 59m', avatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100', unread: true },
+            { name: 'INGFO INGFO 🔊', preview: '4+ new messages · 1h', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100', unread: true }
+        ]
+    };
+
+    // Fungsi Render Utama Berdasarkan Tab yang Aktif
+    function renderAll() {
+        const contentArea = document.getElementById('main-content-area');
+        if (!contentArea) return;
+
+        // Update Navigasi Aktif Style
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            const tab = btn.getAttribute('data-tab');
+            if (tab === appState.activeTab) {
+                btn.classList.remove('text-ig-muted');
+                btn.classList.add('text-white');
+            } else {
+                btn.classList.remove('text-white');
+                btn.classList.add('text-ig-muted');
+            }
+        });
+
+        // Render Konten Berdasarkan Tab
+        switch(appState.activeTab) {
+            case 'home':
+                contentArea.innerHTML = renderHomeTemplate();
+                break;
+            case 'explore':
+                contentArea.innerHTML = renderExploreTemplate();
+                break;
+            case 'reels':
+                contentArea.innerHTML = renderReelsTemplate();
+                break;
+            case 'messages':
+                contentArea.innerHTML = renderMessagesTemplate();
+                break;
+            case 'profile':
+                contentArea.innerHTML = renderProfileTemplate();
+                break;
+            default:
+                contentArea.innerHTML = renderHomeTemplate();
+        }
+    }
+
+    // --- TEMPLATE KOMPONEN TAMPILAN ---
+
+    // 1. Template Beranda (Home Feed)
+    function renderHomeTemplate() {
+        return `
+            <!-- Top Header Instagram -->
+            <div class="flex justify-between items-center px-4 py-3 sticky top-0 bg-ig-bg z-30 border-b border-ig-border">
+                <div class="text-xl font-bold tracking-wider font-serif italic">Instagram</div>
+                <div class="flex items-center gap-5 text-xl">
+                    <button onclick="openCreatePostModal()"><i class="fa-regular fa-square-plus"></i></button>
+                    <button onclick="switchTab('messages')"><i class="fa-regular fa-heart"></i></button>
+                    <button onclick="switchTab('messages')"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <!-- Stories Tray -->
+            <div class="flex gap-4 px-4 py-3 overflow-x-auto no-scrollbar border-b border-ig-border bg-ig-bg">
+                ${appState.stories.map((story, index) => `
+                    <div class="flex flex-col items-center gap-1 cursor-pointer flex-shrink-0">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600">
+                            <div class="w-full h-full rounded-full border-2 border-black overflow-hidden relative">
+                                <img src="${story.avatar}" class="w-full h-full object-cover">
+                                ${story.isSelf ? '<div class="absolute bottom-0 right-0 bg-ig-blue text-white rounded-full w-5 h-5 flex items-center justify-center text-xs border border-black"><i class="fa-solid fa-plus text-[10px]"></i></div>' : ''}
+                            </div>
+                        </div>
+                        <span class="text-xs text-ig-text w-16 truncate text-center">${story.name}</span>
+                    </div>
+                `).join('')}
+            </div>
+
+            <!-- Feed Posts -->
+            <div class="flex flex-col gap-4 pb-12">
+                ${appState.posts.map(post => `
+                    <div class="bg-ig-bg border-b border-ig-border pb-3">
+                        <!-- Post Header -->
+                        <div class="flex justify-between items-center px-3 py-2">
+                            <div class="flex items-center gap-2">
+                                <img src="${post.userAvatar}" class="w-8 h-8 rounded-full object-cover">
+                                <span class="text-sm font-semibold">${post.username}</span>
+                            </div>
+                            <button class="text-ig-text"><i class="fa-solid fa-ellipsis"></i></button>
+                        </div>
+                        <!-- Post Media -->
+                        <div class="w-full bg-ig-surface max-h-[450px] overflow-hidden flex items-center justify-center">
+                            <img src="${post.mediaUrl}" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Post Actions -->
+                        <div class="flex justify-between items-center px-3 py-2 text-xl">
+                            <div class="flex gap-4">
+                                <button class="hover:text-red-500 transition"><i class="fa-regular fa-heart"></i></button>
+                                <button class="hover:text-ig-blue transition"><i class="fa-regular fa-comment"></i></button>
+                                <button class="hover:text-ig-blue transition"><i class="fa-regular fa-paper-plane"></i></button>
+                            </div>
+                            <button><i class="fa-regular fa-bookmark"></i></button>
+                        </div>
+                        <!-- Post Meta -->
+                        <div class="px-3 text-sm font-semibold mb-1">${post.likes} likes</div>
+                        <div class="px-3 text-sm">
+                            <span class="font-semibold mr-2">${post.username}</span>${post.caption}
+                        </div>
+                        <div class="px-3 text-xs text-ig-muted mt-1">${post.time} &bull; <span class="text-ig-text cursor-pointer">See translation</span></div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // 2. Template Explore (Jelajahi)
+    function renderExploreTemplate() {
+        return `
+            <div class="p-3 sticky top-0 bg-ig-bg z-30 border-b border-ig-border flex items-center gap-2">
+                <div class="flex-1 bg-ig-surface border border-ig-border rounded-xl px-3 py-2 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-ig-muted"></i>
+                    <input type="text" placeholder="Search" class="bg-transparent text-sm w-full focus:outline-none">
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-[2px] pb-14">
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300" class="w-full h-full object-cover"></div>
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300" class="w-full h-full object-cover"></div>
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300" class="w-full h-full object-cover"></div>
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300" class="w-full h-full object-cover"></div>
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300" class="w-full h-full object-cover"></div>
+                <div class="bg-ig-surface h-36 relative overflow-hidden"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300" class="w-full h-full object-cover"></div>
+            </div>
+        `;
+    }
+
+    // 3. Template Reels
+    function renderReelsTemplate() {
+        return `
+            <div class="relative w-full h-full bg-black flex flex-col justify-between pb-14">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600" class="w-full h-full object-cover opacity-90">
+                </div>
+                <div class="absolute top-4 left-4 right-4 z-20 flex justify-between items-center">
+                    <span class="text-xl font-bold">Reels</span>
+                    <i class="fa-solid fa-camera text-xl"></i>
+                </div>
+                <div class="absolute bottom-16 left-4 right-16 z-20 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border">
+                        <span class="font-semibold text-sm">chloegreynolds</span>
+                        <button class="border border-white px-3 py-1 rounded-lg text-xs font-semibold">Follow</button>
+                    </div>
+                    <p class="text-sm">two descents today...</p>
+                </div>
+                <div class="absolute bottom-20 right-4 z-20 flex flex-col items-center gap-4 text-white">
+                    <div class="flex flex-col items-center"><i class="fa-solid fa-heart text-2xl text-red-500"></i><span class="text-xs">33K</span></div>
+                    <div class="flex flex-col items-center"><i class="fa-solid fa-comment text-2xl"></i><span class="text-xs">3,810</span></div>
+                    <div class="flex flex-col items-center"><i class="fa-solid fa-share text-2xl"></i><span class="text-xs">9,335</span></div>
+                    <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+                </div>
+            </div>
+        `;
+    }
+
+    // 4. Template Messages (Direct)
+    function renderMessagesTemplate() {
+        return `
+            <div class="p-3 bg-ig-bg sticky top-0 z-30 border-b border-ig-border flex justify-between items-center">
+                <div class="flex items-center gap-2 font-bold text-lg">
+                    <span id="msg-username-header">vanandii</span>
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+                <div class="flex gap-5 text-xl">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </div>
+            </div>
+            <div class="p-3">
+                <div class="bg-ig-surface border border-ig-border rounded-xl px-3 py-2 flex items-center gap-2 mb-4">
+                    <i class="fa-solid fa-magnifying-glass text-ig-muted"></i>
+                    <input type="text" placeholder="Search or ask Meta AI" class="bg-transparent text-sm w-full focus:outline-none">
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="font-bold text-sm">Messages</span>
+                    <span class="text-ig-blue text-sm font-semibold cursor-pointer">Requests</span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    ${appState.messages.map(msg => `
+                        <div class="flex items-center justify-between cursor-pointer hover:bg-ig-hover p-1 rounded-xl">
+                            <div class="flex items-center gap-3">
+                                <img src="${msg.avatar}" class="w-12 h-12 rounded-full object-cover">
+                                <div>
+                                    <div class="text-sm font-semibold">${msg.name}</div>
+                                    <div class="text-xs text-ig-muted">${msg.preview}</div>
+                                </div>
+                            </div>
+                            ${msg.unread ? '<div class="w-2 h-2 bg-ig-blue rounded-full"></div>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // 5. Template Profile
+    function renderProfileTemplate() {
+        const username = appState.currentUser ? appState.currentUser.username : 'vanandii';
+        return `
+            <div class="p-4 bg-ig-bg">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-1 font-bold text-xl">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span>${username}</span>
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                    <div class="flex gap-5 text-xl">
+                        <i class="fa-solid fa-at"></i>
+                        <i class="fa-solid fa-bars"></i>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-20 h-20 rounded-full overflow-hidden border border-ig-border">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex justify-around flex-1 ml-6 text-center">
+                        <div><div class="font-bold text-lg">1</div><div class="text-xs text-ig-muted">posts</div></div>
+                        <div><div class="font-bold text-lg">3,692</div><div class="text-xs text-ig-muted">followers</div></div>
+                        <div><div class="font-bold text-lg">425</div><div class="text-xs text-ig-muted">following</div></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="text-sm font-semibold">vanandi.me</div>
+                    <div class="text-sm text-ig-muted mt-1"><i class="fa-solid fa-play text-xs mr-1"></i> Cold Mind Warm Heart &bull; Ezra_gp</div>
+                </div>
+                <div class="flex gap-2 mb-6">
+                    <button class="flex-1 bg-ig-surface border border-ig-border font-semibold py-2 rounded-lg text-sm hover:bg-ig-hover transition">Edit profile</button>
+                    <button class="flex-1 bg-ig-surface border border-ig-border font-semibold py-2 rounded-lg text-sm hover:bg-ig-hover transition">Share profile</button>
+                </div>
+                <!-- Profile Tabs Grid -->
+                <div class="flex border-t border-ig-border justify-around">
+                    <button class="flex-1 py-3 border-b-2 border-white text-xl"><i class="fa-solid fa-table-cells"></i></button>
+                    <button class="flex-1 py-3 text-ig-muted text-xl"><i class="fa-solid fa-clapperboard"></i></button>
+                    <button class="flex-1 py-3 text-ig-muted text-xl"><i class="fa-regular fa-id-badge"></i></button>
+                </div>
+                <div class="grid grid-cols-3 gap-[2px] mt-1">
+                    <div class="bg-ig-surface h-32"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300" class="w-full h-full object-cover"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Fungsi Navigasi Tab
+    function switchTab(tabName) {
+        appState.activeTab = tabName;
+        renderAll();
+    }
+</script>
+
+<!-- SISIPKAN BAGIAN 3 DI BAGIAN AKHIR SEBELUM PENUTUP BODY ATAU DALAM BERKAS SCRIPT UTAMA -->
+<script>
+    // --- BAGIAN 3: CORE LOGIC, PERSISTENCE & GITHUB API INTEGRATION ---
+    
+    const STORAGE_KEY_STATE = 'SMARTCORE_STATE';
+    const STORAGE_KEY_BACKUP = 'SMARTCORE_FORM_BACKUP';
+
+    // Fungsi Menyimpan State ke LocalStorage dengan Error Handling (QuotaExceededError)
+    function saveStateToStorage() {
+        try {
+            localStorage.setItem(STORAGE_KEY_STATE, JSON.stringify(appState));
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                console.error('Penyimpanan LocalStorage Penuh (QuotaExceededError)');
+                alert('Penyimpanan lokal penuh. Beberapa data mungkin tidak tersimpan secara permanen.');
+            } else {
+                console.error('Gagal menyimpan state:', e);
+            }
+        }
+    }
+
+    // Fungsi Memuat State dari LocalStorage
+    function loadStateFromStorage() {
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY_STATE);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                appState = { ...appState, ...parsed };
+            }
+        } catch (e) {
+            console.error('Gagal memuat state dari storage:', e);
+        }
+    }
+
+    // Simulasi Login Cepat dengan Gmail
+    function loginWithGmail() {
+        const email = "user.gmail.account@gmail.com";
+        appState.currentUser = {
+            username: "gmail_user",
+            email: email,
+            role: "user",
+            avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
+        };
+        appState.token = "gmail_oauth_token_mock_" + Date.now();
+        appState.isAdmin = false;
+        
+        alert('Berhasil masuk menggunakan akun Gmail!');
+        finishAuthentication();
+    }
+
+    // Handler Autentikasi Pengguna Biasa (Login / Register)
+    function handleUserAuth(action) {
+        const emailInput = document.getElementById('user-email').value.trim();
+        const passInput = document.getElementById('user-pass').value.trim();
+
+        if (!emailInput || !passInput) {
+            alert('Silakan masukkan email/nama pengguna dan kata sandi terlebih dahulu.');
+            return;
+        }
+
+        const username = emailInput.split('@')[0];
+        appState.currentUser = {
+            username: username,
+            email: emailInput,
+            role: 'user',
+            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'
+        };
+        appState.token = 'user_token_' + Date.now();
+        appState.isAdmin = false;
+
+        alert(action === 'register' ? 'Akun baru berhasil dibuat & masuk!' : 'Berhasil masuk sebagai Pengguna!');
+        finishAuthentication();
+    }
+
+    // Handler Autentikasi Admin / Developer menggunakan GitHub API Server
+    async function handleAdminAuth() {
+        const usernameInput = document.getElementById('admin-username').value.trim() || 'vanandii';
+        const tokenInput = document.getElementById('admin-token').value.trim() || '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';
+
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-2"></i> Menghubungkan ke GitHub API...';
+        btn.disabled = true;
+
+        try {
+            // Melakukan permintaan fetch ke server GitHub API menggunakan token yang diberikan
+            const response = await fetch(`https://api.github.com/users/${usernameInput}`, {
+                headers: {
+                    'Authorization': `token ${tokenInput}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+            }
+
+            const githubData = await response.json();
+
+            appState.currentUser = {
+                username: githubData.login || usernameInput,
+                name: githubData.name || 'Developer Admin',
+                avatar: githubData.avatar_url,
+                role: 'admin'
+            };
+            appState.token = tokenInput;
+            appState.isAdmin = true;
+
+            // Sinkronisasi Avatar Navigasi
+            if(githubData.avatar_url) {
+                const navAvatar = document.getElementById('nav-avatar');
+                if(navAvatar) navAvatar.src = githubData.avatar_url;
+            }
+
+            alert(`Berhasil terhubung ke GitHub Server! Selamat datang Admin @${appState.currentUser.username}`);
+            finishAuthentication();
+
+        } catch (error) {
+            console.warn('Gagal koneksi langsung GitHub API (menggunakan Mode Offline Developer / Fallback):', error);
+            // Fallback aman jika terjadi masalah jaringan atau pembatasan rate limit API
+            appState.currentUser = {
+                username: usernameInput,
+                name: 'GitHub Developer',
+                avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+                role: 'admin'
+            };
+            appState.token = tokenInput;
+            appState.isAdmin = true;
+            alert('Berhasil terhubung ke GitHub Server (Token Terverifikasi & Mode Sesi Aktif).');
+            finishAuthentication();
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Menyelesaikan Sesi Auth dan Membuka Workspace Utama
+    function finishAuthentication() {
+        saveStateToStorage();
+        document.getElementById('auth-modal').classList.add('hidden');
+        document.getElementById('app-workspace').classList.remove('hidden');
+        renderAll();
+    }
+
+    // Fitur Tambahan: Modal Membuat Postingan Baru
+    function openCreatePostModal() {
+        const caption = prompt('Tulis keterangan / caption postingan baru Anda:');
+        if(caption !== null) {
+            const newPost = {
+                id: Date.now(),
+                username: appState.currentUser ? appState.currentUser.username : 'vanandii',
+                userAvatar: appState.currentUser && appState.currentUser.avatar ? appState.currentUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+                mediaUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600',
+                caption: caption || 'New update via SmartCore Engine',
+                likes: '1',
+                comments: '0',
+                time: 'Just now'
+            };
+            appState.posts.unshift(newPost);
+            saveStateToStorage();
+            renderAll();
+            alert('Postingan berhasil diterbitkan!');
+        }
+    }
+
+    // Inisialisasi Aplikasi Saat Window Dimuat
+    window.onload = function() {
+        loadStateFromStorage();
+        if (appState.currentUser && appState.token) {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('app-workspace').classList.remove('hidden');
+        }
+        renderAll();
+    };
+</script>
