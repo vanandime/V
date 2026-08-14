@@ -1,0 +1,62 @@
+Berikut adalah peta lengkap struktur tata letak (layout), kontainer, elemen UI, beserta nama dan ID-nya pada SmartCore Enterprise Workspace agar Anda dapat melakukan modifikasi secara presisi.
+1. Layout Utama & Shell (#app)
+Kontainer utama pembungkus seluruh aplikasi yang menggunakan sistem flexbox layar penuh.
+ * #app: Pembungkus utama aplikasi (flex h-screen overflow-hidden).
+2. Sidebar & Navigasi Kiri (#sidebar)
+Panel navigasi samping yang dapat disembunyikan/ditampilkan secara responsif.
+ * #sidebar: Elemen <aside> utama sidebar (w-0 md:w-64 overflow-hidden md:overflow-visible).
+ * Header Sidebar: Berisi logo "SC" dan teks judul "SmartCore".
+ * #nav-links: Kontainer tempat item navigasi dinamis dirender.
+   * Template Navigasi (#nav-item-template): Template HTML untuk item menu (.nav-item, .icon-wrapper).
+ * Footer Sidebar:
+   * #storage-indicator: Indikator status penyimpanan lokal (Optimal).
+   * #github-sync-badge: Badge status koneksi sinkronisasi GitHub real-time.
+3. Header Utama (header)
+Bar bagian atas yang membentang di sebelah kanan sidebar.
+ * #sidebar-toggle: Tombol ikon untuk membuka/menutup sidebar (hamburger menu).
+ * #page-title: Judul halaman dinamis (menyesuaikan tab aktif, misal: Dashboard Overview atau Data Management Workspace).
+ * #btn-open-github-config: Tombol konfigurasi GitHub.
+   * #github-repo-label: Label teks yang menampilkan informasi pemilik dan repositori aktif (owner/repo).
+ * #sync-status: Indikator status auto-save lokal.
+4. Main Workspace (#main-workspace)
+Area konten utama tempat tampilan (views) dimuat secara dinamis berdasarkan tab yang dipilih.
+A. Dashboard View (#view-dashboard)
+Tampilan halaman utama ringkasan sistem.
+ * Stats Grid (Kartu Statistik):
+   * #stat-total-records: Angka total data/record yang tersimpan.
+   * #stat-sync-status: Status sinkronisasi terakhir (Synchronized).
+   * #stat-last-sync: Keterangan waktu sinkronisasi terakhir.
+   * #stat-storage-size: Ukuran penggunaan memori lokal dalam satuan KB.
+ * GitHub Synchronization Center Panel:
+   * #btn-manual-sync: Tombol Force Sync Now untuk memicu sinkronisasi manual ke GitHub.
+B. Data Management View (#view-management)
+Tampilan tabel operasional dan manajemen data.
+ * Action Bar:
+   * #search-input: Kotak input pencarian data secara real-time berdasarkan nama/kategori.
+   * #btn-open-modal: Tombol Tambah Data Baru untuk membuka modal input.
+ * Data Table Container:
+   * #data-table-body: Elemen <tbody> tempat baris data tabel dirender secara dinamis.
+   * #table-empty-state: Tampilan state kosong (empty state) ketika data tidak ditemukan atau kosong.
+5. Modal & Dialog Pop-up
+A. Modal Form CRUD Item (#app-modal)
+Dialog pop-up untuk menambah atau mengedit record data.
+ * #modal-title: Judul modal (Tambah Item Baru / Edit Item Record).
+ * #btn-close-modal: Tombol tutup modal (ikon silang di kanan atas).
+ * #data-form: Form utama CRUD.
+   * #item-id: Input tersembunyi (hidden) untuk menyimpan ID record saat mode edit.
+   * #item-name: Input teks nama item.
+   * #item-category: Elemen pilihan dropdown kategori (Infrastructure, Development, Operations, Security).
+   * #item-status: Elemen pilihan dropdown status (Active, Pending, Maintenance).
+   * #btn-cancel-modal: Tombol batal.
+   * Tombol Submit (Simpan Data): Tombol utama penyimpan form.
+B. Modal Konfigurasi GitHub (#github-modal)
+Dialog pop-up untuk pengaturan kredensial repositori GitHub.
+ * #btn-close-github-modal: Tombol tutup modal konfigurasi.
+ * #github-config-form: Form konfigurasi GitHub.
+   * #gh-owner: Input username / owner GitHub.
+   * #gh-repo: Input nama repositori.
+   * #gh-path: Input jalur file penyimpanan di repo (default: data/smartcore-state.json).
+   * #gh-branch: Input nama branch (default: main).
+   * #gh-token: Input Personal Access Token (PAT).
+   * #btn-cancel-github-modal: Tombol batal konfigurasi.
+   * Tombol Submit (Simpan & Hubungkan): Tombol untuk menyimpan kredensial dan memicu sinkronisasi.
