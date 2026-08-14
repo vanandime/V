@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SmartCore Nexus &bull; Autonomous Dev & Creator OS</title>
+    <title>SmartCore Nexus v3.1 &bull; Autonomous Dev & Creator OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -110,8 +110,9 @@
                     <button type="button" onclick="handleAdminAuth()" class="w-full bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-black py-3 rounded-xl text-xs mt-1 hover:opacity-90 transition cursor-pointer shadow-lg shadow-violet-500/20">Hubungkan Core Server</button>
                 </div>
             </div>
-            <div class="text-center py-3 border-t border-nexus-border text-[10px] text-nexus-muted font-mono">
-                SmartCore Nexus OS v3.0 &bull; Decentralized Architecture
+            <div class="text-center py-3 border-t border-nexus-border text-[10px] text-nexus-muted font-mono flex items-center justify-center gap-2">
+                <span>SmartCore Nexus OS v3.1 &bull; Auto-Sync Index Active</span>
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
             </div>
         </div>
 
@@ -456,7 +457,8 @@
             try {
                 const saved = localStorage.getItem(STORAGE_KEY_STATE);
                 if (saved) {
-                    appState = { ...appState, ...JSON.parse(saved) };
+                    const parsed = JSON.parse(saved);
+                    appState = { ...appState, ...parsed };
                 }
             } catch (e) {
                 console.error('Failed loading storage:', e);
@@ -869,6 +871,16 @@
         function openCreateReelModal() {
             alert('Fitur rekam/upload Lightning Stream dibuka.');
         }
+
+        // FITUR OTOMATIS: Memuat ulang indeks otomatis setiap detik (1000ms) untuk sinkronisasi pembaharuan index tanpa terlewat
+        setInterval(function() {
+            loadStateFromStorage();
+            const activeInput = document.activeElement;
+            const isTyping = activeInput && (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA');
+            if (!isTyping && document.getElementById('app-workspace') && !document.getElementById('app-workspace').classList.contains('hidden')) {
+                renderAll();
+            }
+        }, 1000);
 
         window.onload = function() {
             loadStateFromStorage();
