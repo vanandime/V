@@ -80,9 +80,9 @@
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden">
         
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-64 bg-slate-900/90 border-r border-slate-800 flex flex-col z-20 transition-smooth">
-            <div class="h-16 flex items-center px-6 border-b border-slate-800">
+        <!-- Sidebar Navigation (Closed by default on mobile load) -->
+        <aside id="sidebar" class="w-0 md:w-64 overflow-hidden md:overflow-visible bg-slate-900/90 border-r border-slate-800 flex flex-col z-20 transition-smooth">
+            <div class="h-16 flex items-center px-6 border-b border-slate-800 min-w-[16rem]">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/30">
                         SC
@@ -92,12 +92,12 @@
             </div>
 
             <!-- Navigation Links Container -->
-            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto min-w-[16rem]">
                 <!-- Dynamic Navigation Rendered Here -->
             </nav>
 
             <!-- Sidebar Footer / Status -->
-            <div class="p-4 border-t border-slate-800 space-y-3">
+            <div class="p-4 border-t border-slate-800 space-y-3 min-w-[16rem]">
                 <div class="flex items-center justify-between text-xs text-slate-400">
                     <span>Storage Status</span>
                     <span id="storage-indicator" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">Optimal</span>
@@ -363,7 +363,7 @@
         currentTab: 'dashboard',
         searchQuery: '',
         lastSyncTime: null,
-        syncStatus: 'idle', // 'idle', 'syncing', 'synced', 'error'
+        syncStatus: 'idle',
         githubConfig: {
             owner: '',
             repo: '',
@@ -413,8 +413,6 @@
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
             updateStorageIndicator();
-            
-            // Trigger automatic real-time GitHub sync
             triggerGitHubSync();
         } catch (error) {
             if (error.name === 'QuotaExceededError' || error.code === 22) {
@@ -425,7 +423,6 @@
         }
     }
 
-    // GitHub Real-Time Sync Engine using Contents API
     let isSyncing = false;
     async function triggerGitHubSync() {
         const config = appState.githubConfig;
@@ -436,7 +433,7 @@
 
         if (isSyncing) return;
         isSyncing = true;
-        updateSyncBadge('syncing', 'Menyelaraskan ke GitHub...');
+        updateSyncBadge('syncing', 'Menyelaraskan...');
 
         try {
             const apiEndpoint = `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${config.path}`;
@@ -446,7 +443,6 @@
                 'Content-Type': 'application/json'
             };
 
-            // 1. Get existing file SHA if it exists
             let fileSha = null;
             try {
                 const getRes = await fetch(`${apiEndpoint}?ref=${config.branch}`, { headers });
@@ -454,18 +450,14 @@
                     const fileData = await getRes.json();
                     fileSha = fileData.sha;
                 }
-            } catch (e) {
-                // File might not exist yet, which is fine for first push
-            }
+            } catch (e) {}
 
-            // 2. Prepare payload
             const contentData = JSON.stringify({
                 items: appState.items,
                 updatedAt: new Date().toISOString(),
-                version: '1.2'
+                version: '1.3'
             }, null, 2);
 
-            // Safe Base64 encoding supporting unicode
             const base64Content = btoa(unescape(encodeURIComponent(contentData)));
 
             const bodyPayload = {
@@ -477,7 +469,6 @@
                 bodyPayload.sha = fileSha;
             }
 
-            // 3. Put request to GitHub API
             const putRes = await fetch(apiEndpoint, {
                 method: 'PUT',
                 headers: headers,
@@ -486,16 +477,13 @@
 
             if (putRes.ok) {
                 appState.lastSyncTime = new Date().toLocaleTimeString();
-                updateSyncBadge('synced', 'Synced ke GitHub');
+                updateSyncBadge('synced', 'Synced');
                 updateDashboardSyncStats();
             } else {
-                const errJson = await putRes.json();
-                console.error('GitHub Sync Error:', errJson.message);
-                updateSyncBadge('error', 'Gagal Sync GitHub');
+                updateSyncBadge('error', 'Gagal Sync');
             }
         } catch (error) {
-            console.error('Network or API Error during GitHub sync:', error);
-            updateSyncBadge('error', 'Koneksi GitHub Gagal');
+            updateSyncBadge('error', 'Koneksi Gagal');
         } finally {
             isSyncing = false;
         }
@@ -605,7 +593,6 @@
             updateDashboardSyncStats();
             updateStorageIndicator();
 
-            // Manual sync button binding
             const btnManualSync = document.getElementById('btn-manual-sync');
             if (btnManualSync) {
                 btnManualSync.addEventListener('click', () => triggerGitHubSync());
@@ -743,7 +730,6 @@
         );
     }
 
-    // GitHub Config Modal Handlers
     function openGitHubModal() {
         const modal = document.getElementById('github-modal');
         if (!modal) return;
@@ -762,12 +748,10 @@
         if (modal) modal.classList.add('hidden');
     }
 
-    // Global Initialization on DOM Load
     document.addEventListener('DOMContentLoaded', () => {
         loadStateFromStorage();
         renderAll();
 
-        // Modal Action Bindings
         const modal = document.getElementById('app-modal');
         const btnCloseModal = document.getElementById('btn-close-modal');
         const btnCancelModal = document.getElementById('btn-cancel-modal');
@@ -776,7 +760,6 @@
         if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
         if (btnCancelModal) btnCancelModal.addEventListener('click', closeModal);
 
-        // GitHub Modal Bindings
         const btnOpenGhConfig = document.getElementById('btn-open-github-config');
         const btnCloseGhModal = document.getElementById('btn-close-github-modal');
         const btnCancelGhModal = document.getElementById('btn-cancel-github-modal');
@@ -840,13 +823,13 @@
             });
         }
 
-        // Sidebar responsive toggle
+        // Sidebar responsive toggle handler
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const sidebar = document.getElementById('sidebar');
         if (sidebarToggle && sidebar) {
             sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('w-64');
                 sidebar.classList.toggle('w-0');
+                sidebar.classList.toggle('w-64');
                 sidebar.classList.toggle('overflow-hidden');
             });
         }
