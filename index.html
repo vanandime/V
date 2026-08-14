@@ -75,7 +75,7 @@
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
-        <!-- Sidebar Navigation (Desktop Only / Hidden completely on Mobile for clean Bottom Nav experience) -->
+        <!-- Sidebar Navigation (Desktop Only) -->
         <aside id="sidebar" class="hidden md:flex w-72 bg-[#09090b] border-r border-[#27272a] flex-col shrink-0">
             <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
                 <div class="flex items-center space-x-3">
@@ -426,7 +426,7 @@
                 const contentData = JSON.stringify({
                     items: appState.items,
                     updatedAt: new Date().toISOString(),
-                    version: '1.9'
+                    version: '1.10'
                 }, null, 2);
 
                 const base64Content = btoa(unescape(encodeURIComponent(contentData)));
@@ -694,11 +694,25 @@
             loadStateFromStorage();
             renderAll();
 
+            // Backdrop click to close modals
+            const appModal = document.getElementById('app-modal');
+            if (appModal) {
+                appModal.addEventListener('click', (e) => {
+                    if (e.target === appModal) closeModal();
+                });
+            }
+
+            const ghModal = document.getElementById('github-modal');
+            if (ghModal) {
+                ghModal.addEventListener('click', (e) => {
+                    if (e.target === ghModal) ghModal.classList.add('hidden');
+                });
+            }
+
             document.getElementById('btn-close-modal')?.addEventListener('click', closeModal);
             document.getElementById('btn-cancel-modal')?.addEventListener('click', closeModal);
 
             const btnOpenGhConfig = document.getElementById('btn-open-github-config');
-            const ghModal = document.getElementById('github-modal');
             if (btnOpenGhConfig) {
                 btnOpenGhConfig.addEventListener('click', () => {
                     document.getElementById('gh-owner').value = appState.githubConfig.owner;
