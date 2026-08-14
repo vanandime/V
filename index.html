@@ -72,29 +72,35 @@
         .sidebar-closed {
             transform: translateX(-100%) !important;
         }
+        
+        @media (min-width: 768px) {
+            .sidebar-closed {
+                margin-left: -18rem; /* 72 = 18rem */
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white pb-16 md:pb-0">
 
     <!-- Mobile Backdrop Overlay -->
-    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 hidden transition-smooth"></div>
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 hidden md:hidden transition-smooth"></div>
 
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none shrink-0">
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out shadow-2xl md:shadow-none shrink-0">
             <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
                 <div class="flex items-center space-x-3">
-                    <!-- Logo sebagai tombol toggle sidebar di dalam sidebar -->
-                    <button id="sidebar-toggle-btn" class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600/20 to-indigo-500/20 border border-brand-500/30 backdrop-blur-md shadow-inner hover:border-brand-500/60 hover:scale-105 transition-smooth cursor-pointer focus:outline-none shrink-0" title="Sembunyikan Sidebar">
+                    <!-- Single Interactive Logo Button -->
+                    <button id="sidebar-toggle-btn" class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600/25 to-indigo-500/25 border border-brand-500/40 backdrop-blur-md shadow-inner hover:border-brand-500 hover:scale-105 transition-smooth cursor-pointer focus:outline-none shrink-0" title="Sembunyikan Sidebar">
                         <svg class="w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                         </svg>
                     </button>
                     <span class="font-bold text-lg tracking-tight text-white">SmartCore</span>
                 </div>
-                <!-- Close Button for Mobile -->
+                <!-- Close Button for Mobile Sidebar -->
                 <button id="sidebar-close" class="md:hidden text-zinc-400 hover:text-white p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -124,11 +130,11 @@
         <!-- Main Wrapper -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#000000]">
             
-            <!-- Sleek Header (Tanpa Logo) -->
+            <!-- Sleek Header (Clean, No Logo) -->
             <header class="h-16 ig-glass flex items-center justify-between px-4 md:px-8 z-10 shrink-0">
                 <div class="flex items-center space-x-3 md:space-x-4 min-w-0">
-                    <!-- Tombol hamburger khusus untuk memunculkan sidebar di mobile jika tertutup -->
-                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0">
+                    <!-- Mobile Hamburger Toggle to open sidebar if needed -->
+                    <button id="mobile-hamburger-btn" class="md:hidden p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <h1 id="page-title" class="text-sm md:text-base font-semibold tracking-tight text-white truncate">Dashboard Overview</h1>
@@ -369,7 +375,7 @@
             },
             navItems: [
                 { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-16zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-16z"/></svg>' },
-                { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
+                { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
             ],
             items: [
                 { id: 'REC-001', name: 'Core Gateway Server', category: 'Infrastructure', status: 'Active', createdAt: '2026-06-01 08:30' },
@@ -706,20 +712,29 @@
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
-        // Toggle Sidebar Functionality
+        // Universal Toggle Sidebar Functionality
         function toggleSidebar(forceState) {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
             if (!sidebar) return;
 
-            const shouldClose = typeof forceState === 'boolean' ? !forceState : !sidebar.classList.contains('sidebar-closed');
+            const isMobile = window.innerWidth < 768;
+            const shouldClose = typeof forceState === 'boolean' ? !forceState : (isMobile ? !sidebar.classList.contains('-translate-x-full') : !sidebar.classList.contains('sidebar-closed'));
 
-            if (shouldClose) {
-                sidebar.classList.add('sidebar-closed');
-                if (backdrop) backdrop.classList.add('hidden');
+            if (isMobile) {
+                if (shouldClose) {
+                    sidebar.classList.add('-translate-x-full');
+                    if (backdrop) backdrop.classList.add('hidden');
+                } else {
+                    sidebar.classList.remove('-translate-x-full');
+                    if (backdrop) backdrop.classList.remove('hidden');
+                }
             } else {
-                sidebar.classList.remove('sidebar-closed');
-                if (backdrop && window.innerWidth < 768) backdrop.classList.remove('hidden');
+                if (shouldClose) {
+                    sidebar.classList.add('sidebar-closed');
+                } else {
+                    sidebar.classList.remove('sidebar-closed');
+                }
             }
         }
 
@@ -727,16 +742,16 @@
             loadStateFromStorage();
             renderAll();
 
-            // Setup Logo Toggle Button inside Sidebar
+            // Setup Logo Toggle Button inside Sidebar Header
             const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
             if (sidebarToggleBtn) {
                 sidebarToggleBtn.addEventListener('click', () => toggleSidebar());
             }
 
-            // Setup Mobile Menu Button in Header
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', () => toggleSidebar(true));
+            // Mobile Hamburger Button in Header
+            const mobileHamburgerBtn = document.getElementById('mobile-hamburger-btn');
+            if (mobileHamburgerBtn) {
+                mobileHamburgerBtn.addEventListener('click', () => toggleSidebar(true));
             }
 
             const sidebarClose = document.getElementById('sidebar-close');
