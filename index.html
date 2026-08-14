@@ -66,7 +66,7 @@
         }
         
         .transition-smooth {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
@@ -78,9 +78,9 @@
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
-            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
+        <!-- Sidebar Navigation (Collapsible with smooth width & transform transition) -->
+        <aside id="sidebar" class="fixed md:relative inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transition-all duration-300 ease-in-out shadow-2xl md:shadow-none overflow-hidden shrink-0">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a] min-w-[18rem]">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-600/30">
                         SC
@@ -94,12 +94,12 @@
             </div>
 
             <!-- Navigation Links Container -->
-            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+            <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto min-w-[18rem]">
                 <!-- Dynamic Navigation Rendered Here -->
             </nav>
 
             <!-- Sidebar Footer / Status -->
-            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40">
+            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40 min-w-[18rem]">
                 <div class="flex items-center justify-between text-xs text-zinc-400">
                     <span>Storage Status</span>
                     <span id="storage-indicator" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">Optimal</span>
@@ -352,7 +352,7 @@
             currentTab: 'dashboard',
             searchQuery: '',
             lastSyncTime: null,
-            sidebarOpen: true, // Default terbuka di desktop
+            sidebarOpen: true, // Default open on desktop
             githubConfig: {
                 owner: '',
                 repo: '',
@@ -533,14 +533,12 @@
             if (!sidebar) return;
 
             if (appState.sidebarOpen) {
-                sidebar.style.transform = 'translateX(0px)';
-                sidebar.style.width = '18rem'; // w-72
-                sidebar.style.minWidth = '18rem';
+                sidebar.style.width = '18rem'; // w-72 equivalent
+                sidebar.style.transform = 'translateX(0)';
                 if (window.innerWidth < 768 && backdrop) backdrop.classList.remove('hidden');
             } else {
+                sidebar.style.width = '0rem';
                 sidebar.style.transform = 'translateX(-100%)';
-                sidebar.style.width = '0px';
-                sidebar.style.minWidth = '0px';
                 if (backdrop) backdrop.classList.add('hidden');
             }
         }
