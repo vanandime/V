@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Instagram clone - SmartCore Engine v1.5</title>
+    <title>SmartCore Pulse &bull; Creator & Developer Network</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,14 +11,15 @@
             theme: {
                 extend: {
                     colors: {
-                        ig: {
-                            bg: '#000000',
-                            surface: '#121212',
-                            border: '#262626',
-                            text: '#f5f5f5',
-                            muted: '#a8a8a8',
-                            blue: '#0095f6',
-                            hover: '#1a1a1a'
+                        pulse: {
+                            bg: '#090a0f',
+                            surface: '#13151f',
+                            border: '#1f2433',
+                            text: '#f1f5f9',
+                            muted: '#94a3b8',
+                            cyan: '#06b6d4',
+                            indigo: '#6366f1',
+                            hover: '#1b1f2e'
                         }
                     }
                 }
@@ -32,8 +33,8 @@
             -webkit-tap-highlight-color: transparent;
         }
         body {
-            background-color: #000000;
-            color: #f5f5f5;
+            background-color: #090a0f;
+            color: #f1f5f9;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
         }
@@ -42,10 +43,10 @@
             height: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #000;
+            background: #090a0f;
         }
         ::-webkit-scrollbar-thumb {
-            background: #262626;
+            background: #1f2433;
             border-radius: 2px;
         }
         .no-scrollbar::-webkit-scrollbar {
@@ -57,52 +58,54 @@
         }
     </style>
 </head>
-<body class="bg-ig-bg text-ig-text flex justify-center items-center min-h-screen m-0 p-0">
+<body class="bg-pulse-bg text-pulse-text flex justify-center items-center min-h-screen m-0 p-0">
 
     <!-- Container Utama Aplikasi -->
-    <div id="app-container" class="w-full max-w-md h-screen md:h-[90vh] md:rounded-2xl md:border md:border-ig-border bg-ig-bg flex flex-col relative overflow-hidden shadow-2xl">
+    <div id="app-container" class="w-full max-w-md h-screen md:h-[90vh] md:rounded-2xl md:border md:border-pulse-border bg-pulse-bg flex flex-col relative overflow-hidden shadow-2xl">
 
-        <!-- AUTH OVERLAY (LOGIN / REGISTER / ADMIN GITHUB) -->
-        <div id="auth-modal" class="absolute inset-0 z-50 bg-ig-bg flex flex-col justify-between p-6 overflow-y-auto">
-            <div class="flex flex-col items-center mt-8">
-                <i class="fa-brands fa-instagram text-6xl mb-6 text-white"></i>
-                <h1 class="text-2xl font-bold tracking-tight mb-2">SmartCore Instagram</h1>
-                <p class="text-ig-muted text-sm text-center mb-6">Masuk untuk melihat foto, reel, dan pesan dari teman Anda.</p>
+        <!-- AUTH OVERLAY (LOGIN / REGISTER / GITHUB ADMIN) -->
+        <div id="auth-modal" class="absolute inset-0 z-50 bg-pulse-bg flex flex-col justify-between p-6 overflow-y-auto">
+            <div class="flex flex-col items-center mt-6">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 mb-5">
+                    <i class="fa-solid fa-cube text-3xl text-white"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight mb-1 text-white">SmartCore Pulse</h1>
+                <p class="text-pulse-muted text-xs text-center mb-6">Hubungkan portofolio, bagikan kode, dan berkolaborasi dalam satu ruang.</p>
                 
-                <!-- Tab Pilihan Auth -->
-                <div class="flex w-full bg-ig-surface border border-ig-border rounded-xl p-1 mb-6">
-                    <button type="button" onclick="switchAuthTab('user')" id="tab-user" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-ig-blue text-white transition-all cursor-pointer">Pengguna</button>
-                    <button type="button" onclick="switchAuthTab('admin')" id="tab-admin" class="flex-1 py-2 text-sm font-semibold rounded-lg text-ig-muted transition-all cursor-pointer">Admin / Dev</button>
+                <!-- Tab Auth -->
+                <div class="flex w-full bg-pulse-surface border border-pulse-border rounded-xl p-1 mb-5">
+                    <button type="button" onclick="switchAuthTab('user')" id="tab-user" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-pulse-cyan text-black transition-all cursor-pointer">Kreator / Member</button>
+                    <button type="button" onclick="switchAuthTab('admin')" id="tab-admin" class="flex-1 py-2 text-xs font-semibold rounded-lg text-pulse-muted transition-all cursor-pointer">Developer Node</button>
                 </div>
 
-                <!-- Form Pengguna (Gmail / Standard) -->
+                <!-- Form Member -->
                 <div id="auth-form-user" class="w-full flex flex-col gap-3">
-                    <button type="button" onclick="loginWithGmail()" class="w-full bg-white text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-200 transition cursor-pointer">
-                        <i class="fa-brands fa-google text-red-500"></i> Masuk dengan Gmail
+                    <button type="button" onclick="loginWithGmail()" class="w-full bg-white text-black font-semibold py-3 rounded-xl text-xs flex items-center justify-center gap-2 hover:bg-gray-100 transition cursor-pointer">
+                        <i class="fa-brands fa-google text-red-500 text-sm"></i> Autentikasi dengan Google Workspace
                     </button>
-                    <div class="flex items-center my-3">
-                        <div class="flex-1 border-t border-ig-border"></div>
-                        <span class="px-3 text-xs text-ig-muted uppercase">Atau email biasa</span>
-                        <div class="flex-1 border-t border-ig-border"></div>
+                    <div class="flex items-center my-2">
+                        <div class="flex-1 border-t border-pulse-border"></div>
+                        <span class="px-3 text-[10px] text-pulse-muted uppercase tracking-wider">Atau Akun Kustom</span>
+                        <div class="flex-1 border-t border-pulse-border"></div>
                     </div>
-                    <input type="email" id="user-email" placeholder="Nomor telepon, nama pengguna, atau email" class="w-full bg-ig-surface border border-ig-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-ig-blue">
-                    <input type="password" id="user-pass" placeholder="Kata sandi" class="w-full bg-ig-surface border border-ig-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-ig-blue">
-                    <button type="button" onclick="handleUserAuth('login')" class="w-full bg-ig-blue text-white font-semibold py-3 rounded-xl mt-2 hover:opacity-90 transition cursor-pointer">Masuk</button>
-                    <button type="button" onclick="handleUserAuth('register')" class="w-full bg-ig-surface border border-ig-border text-white font-semibold py-3 rounded-xl hover:bg-ig-hover transition cursor-pointer">Buat Akun Baru</button>
+                    <input type="email" id="user-email" placeholder="Email atau Nama Kreator" class="w-full bg-pulse-surface border border-pulse-border rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pulse-cyan text-white">
+                    <input type="password" id="user-pass" placeholder="Kunci Akses / Password" class="w-full bg-pulse-surface border border-pulse-border rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pulse-cyan text-white">
+                    <button type="button" onclick="handleUserAuth('login')" class="w-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-black font-bold py-3 rounded-xl text-xs mt-1 hover:opacity-90 transition cursor-pointer shadow-md">Masuk ke Pulse</button>
+                    <button type="button" onclick="handleUserAuth('register')" class="w-full bg-pulse-surface border border-pulse-border text-white font-semibold py-3 rounded-xl text-xs hover:bg-pulse-hover transition cursor-pointer">Daftar Akun Baru</button>
                 </div>
 
-                <!-- Form Admin / Developer (GitHub API Server) -->
+                <!-- Form Developer Node -->
                 <div id="auth-form-admin" class="w-full flex flex-col gap-3 hidden">
-                    <div class="p-3 bg-ig-surface border border-ig-border rounded-xl text-xs text-ig-muted mb-2">
-                        <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-1"></i> Mode Developer menggunakan GitHub API dengan Token otentikasi sistem.
+                    <div class="p-3 bg-pulse-surface border border-pulse-border rounded-xl text-[11px] text-pulse-muted mb-1">
+                        <i class="fa-solid fa-terminal text-cyan-400 mr-1"></i> Mode Node Engine terhubung langsung dengan GitHub API v3 untuk sinkronisasi repositori.
                     </div>
-                    <input type="text" id="admin-username" placeholder="Username GitHub Developer" value="vanandii" class="w-full bg-ig-surface border border-ig-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-ig-blue">
-                    <input type="password" id="admin-token" placeholder="GitHub Personal Access Token" value="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" class="w-full bg-ig-surface border border-ig-border rounded-xl px-4 py-3 text-sm font-mono text-xs focus:outline-none focus:border-ig-blue">
-                    <button type="button" onclick="handleAdminAuth()" class="w-full bg-ig-blue text-white font-semibold py-3 rounded-xl mt-2 hover:opacity-90 transition cursor-pointer">Hubungkan ke GitHub Server</button>
+                    <input type="text" id="admin-username" placeholder="Username GitHub" value="vanandii" class="w-full bg-pulse-surface border border-pulse-border rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pulse-cyan text-white">
+                    <input type="password" id="admin-token" placeholder="GitHub Access Token" value="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" class="w-full bg-pulse-surface border border-pulse-border rounded-xl px-4 py-3 text-xs font-mono text-[10px] focus:outline-none focus:border-pulse-cyan text-white">
+                    <button type="button" onclick="handleAdminAuth()" class="w-full bg-pulse-cyan text-black font-bold py-3 rounded-xl text-xs mt-1 hover:opacity-90 transition cursor-pointer">Sinkronisasi Node Server</button>
                 </div>
             </div>
-            <div class="text-center py-3 border-t border-ig-border text-xs text-ig-muted">
-                SmartCore Engine v1.5 &bull; Powered by GitHub API
+            <div class="text-center py-3 border-t border-pulse-border text-[10px] text-pulse-muted">
+                SmartCore Pulse Engine v2.0 &bull; Decentralized Layout
             </div>
         </div>
 
@@ -112,16 +115,16 @@
             <div id="main-content-area" class="flex-1 overflow-y-auto no-scrollbar pb-20"></div>
 
             <!-- Bottom Navigation Bar -->
-            <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 h-14 bg-ig-bg border-t border-ig-border flex justify-around items-center z-40 px-2">
-                <button type="button" onclick="switchTab('home')" class="nav-btn text-2xl text-white p-2 cursor-pointer" data-tab="home"><i class="fa-solid fa-house"></i></button>
-                <button type="button" onclick="switchTab('explore')" class="nav-btn text-2xl text-ig-muted p-2 cursor-pointer" data-tab="explore"><i class="fa-regular fa-compass"></i></button>
-                <button type="button" onclick="switchTab('reels')" class="nav-btn text-2xl text-ig-muted p-2 cursor-pointer" data-tab="reels"><i class="fa-solid fa-clapperboard"></i></button>
-                <button type="button" onclick="switchTab('messages')" class="nav-btn text-2xl text-ig-muted p-2 relative cursor-pointer" data-tab="messages">
-                    <i class="fa-regular fa-paper-plane"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            <nav id="bottom-nav" class="absolute bottom-0 left-0 right-0 h-14 bg-pulse-bg border-t border-pulse-border flex justify-around items-center z-40 px-2">
+                <button type="button" onclick="switchTab('home')" class="nav-btn text-xl text-white p-2 cursor-pointer transition" data-tab="home"><i class="fa-solid fa-wave-square"></i></button>
+                <button type="button" onclick="switchTab('explore')" class="nav-btn text-xl text-pulse-muted p-2 cursor-pointer transition" data-tab="explore"><i class="fa-solid fa-globe"></i></button>
+                <button type="button" onclick="switchTab('reels')" class="nav-btn text-xl text-pulse-muted p-2 cursor-pointer transition" data-tab="reels"><i class="fa-solid fa-bolt"></i></button>
+                <button type="button" onclick="switchTab('messages')" class="nav-btn text-xl text-pulse-muted p-2 relative cursor-pointer transition" data-tab="messages">
+                    <i class="fa-solid fa-comments"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-cyan-400 rounded-full"></span>
                 </button>
-                <button type="button" onclick="switchTab('profile')" class="nav-btn text-2xl text-ig-muted p-2 rounded-full overflow-hidden w-8 h-8 flex items-center justify-center border border-transparent cursor-pointer" data-tab="profile">
-                    <img id="nav-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-full h-full object-cover rounded-full" alt="Profile">
+                <button type="button" onclick="switchTab('profile')" class="nav-btn text-xl text-pulse-muted p-2 rounded-full overflow-hidden w-8 h-8 flex items-center justify-center border border-transparent cursor-pointer transition" data-tab="profile">
+                    <img id="nav-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-full h-full object-cover rounded-full" alt="Persona">
                 </button>
             </nav>
         </div>
@@ -133,59 +136,65 @@
     <script>
         function renderHomeTemplate() {
             return `
-                <div class="flex justify-between items-center px-4 py-3 sticky top-0 bg-ig-bg z-30 border-b border-ig-border">
-                    <div class="text-xl font-bold tracking-wider font-serif italic">Instagram</div>
-                    <div class="flex items-center gap-5 text-xl">
-                        <button type="button" onclick="openCreatePostModal()" class="cursor-pointer hover:text-ig-muted transition"><i class="fa-regular fa-square-plus"></i></button>
-                        <button type="button" onclick="switchTab('messages')" class="cursor-pointer hover:text-ig-muted transition"><i class="fa-regular fa-heart"></i></button>
-                        <button type="button" onclick="switchTab('messages')" class="cursor-pointer hover:text-ig-muted transition"><i class="fa-regular fa-paper-plane"></i></button>
+                <div class="flex justify-between items-center px-4 py-3 sticky top-0 bg-pulse-bg z-30 border-b border-pulse-border">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow">SP</div>
+                        <span class="text-base font-bold tracking-tight text-white">SmartCore Pulse</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-lg text-pulse-text">
+                        <button type="button" onclick="openCreatePostModal()" class="cursor-pointer hover:text-pulse-cyan transition"><i class="fa-solid fa-plus-square"></i></button>
+                        <button type="button" onclick="switchTab('messages')" class="cursor-pointer hover:text-pulse-cyan transition"><i class="fa-solid fa-bell"></i></button>
+                        <button type="button" onclick="switchTab('messages')" class="cursor-pointer hover:text-pulse-cyan transition"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
-                <!-- Stories Container -->
-                <div class="flex gap-4 px-4 py-3 overflow-x-auto no-scrollbar border-b border-ig-border bg-ig-bg">
+                <!-- Active Node Channels / Stories -->
+                <div class="flex gap-4 px-4 py-3 overflow-x-auto no-scrollbar border-b border-pulse-border bg-pulse-bg">
                     ${appState.stories.map((story, index) => `
                         <div onclick="viewStory(${index})" class="flex flex-col items-center gap-1 cursor-pointer flex-shrink-0">
-                            <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600">
-                                <div class="w-full h-full rounded-full border-2 border-black overflow-hidden relative">
+                            <div class="w-16 h-16 rounded-2xl p-[2px] bg-gradient-to-tr from-cyan-400 to-indigo-500">
+                                <div class="w-full h-full rounded-2xl bg-pulse-surface overflow-hidden relative">
                                     <img src="${story.avatar}" class="w-full h-full object-cover">
-                                    ${story.isSelf ? '<div class="absolute bottom-0 right-0 bg-ig-blue text-white rounded-full w-5 h-5 flex items-center justify-center text-xs border border-black"><i class="fa-solid fa-plus text-[10px]"></i></div>' : ''}
+                                    ${story.isSelf ? '<div class="absolute bottom-0 right-0 bg-pulse-cyan text-black rounded-full w-5 h-5 flex items-center justify-center text-[10px] border border-black font-bold"><i class="fa-solid fa-plus"></i></div>' : ''}
                                 </div>
                             </div>
-                            <span class="text-xs text-ig-text w-16 truncate text-center">${story.name}</span>
+                            <span class="text-[11px] text-pulse-muted w-16 truncate text-center">${story.name}</span>
                         </div>
                     `).join('')}
                 </div>
-                <!-- Feed Posts -->
+                <!-- Pulse Feed Posts -->
                 <div class="flex flex-col gap-4 pb-12">
                     ${appState.posts.map(post => `
-                        <div class="bg-ig-bg border-b border-ig-border pb-3" data-post-id="${post.id}">
-                            <div class="flex justify-between items-center px-3 py-2">
+                        <div class="bg-pulse-surface border border-pulse-border md:rounded-xl my-2 mx-2 p-3 pb-3" data-post-id="${post.id}">
+                            <div class="flex justify-between items-center mb-3">
                                 <div class="flex items-center gap-2 cursor-pointer" onclick="viewUserProfile('${post.username}')">
-                                    <img src="${post.userAvatar}" class="w-8 h-8 rounded-full object-cover">
-                                    <span class="text-sm font-semibold">${post.username}</span>
+                                    <img src="${post.userAvatar}" class="w-9 h-9 rounded-xl object-cover border border-pulse-border">
+                                    <div>
+                                        <span class="text-xs font-bold text-white block">${post.username}</span>
+                                        <span class="text-[10px] text-pulse-cyan">Verified Creator</span>
+                                    </div>
                                 </div>
-                                <button type="button" onclick="openPostOptions(${post.id})" class="text-ig-text cursor-pointer"><i class="fa-solid fa-ellipsis"></i></button>
+                                <button type="button" onclick="openPostOptions(${post.id})" class="text-pulse-muted hover:text-white cursor-pointer"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                             </div>
-                            <div class="w-full bg-ig-surface max-h-[450px] overflow-hidden flex items-center justify-center relative group" ondblclick="toggleLikePost(${post.id})">
+                            <div class="w-full bg-pulse-bg rounded-lg max-h-[420px] overflow-hidden flex items-center justify-center relative mb-3 border border-pulse-border" ondblclick="toggleLikePost(${post.id})">
                                 <img src="${post.mediaUrl}" class="w-full h-full object-cover">
                             </div>
-                            <div class="flex justify-between items-center px-3 py-2 text-xl">
+                            <div class="flex justify-between items-center mb-2 text-lg text-pulse-text">
                                 <div class="flex gap-4">
-                                    <button type="button" onclick="toggleLikePost(${post.id})" class="cursor-pointer transition ${post.isLiked ? 'text-red-500 fa-solid fa-heart' : 'text-ig-text hover:text-red-500 fa-regular fa-heart'}"></button>
-                                    <button type="button" onclick="openCommentsModal(${post.id})" class="hover:text-ig-blue transition cursor-pointer text-ig-text"><i class="fa-regular fa-comment"></i></button>
-                                    <button type="button" onclick="sharePost(${post.id})" class="hover:text-ig-blue transition cursor-pointer text-ig-text"><i class="fa-regular fa-paper-plane"></i></button>
+                                    <button type="button" onclick="toggleLikePost(${post.id})" class="cursor-pointer transition ${post.isLiked ? 'text-red-500 fa-solid fa-heart' : 'text-pulse-muted hover:text-red-500 fa-regular fa-heart'}"></button>
+                                    <button type="button" onclick="openCommentsModal(${post.id})" class="hover:text-pulse-cyan transition cursor-pointer text-pulse-muted"><i class="fa-regular fa-comment"></i></button>
+                                    <button type="button" onclick="sharePost(${post.id})" class="hover:text-pulse-cyan transition cursor-pointer text-pulse-muted"><i class="fa-solid fa-share-nodes"></i></button>
                                 </div>
-                                <button type="button" onclick="toggleBookmark(${post.id})" class="cursor-pointer transition ${post.isBookmarked ? 'text-white fa-solid fa-bookmark' : 'text-ig-text hover:text-white fa-regular fa-bookmark'}"></button>
+                                <button type="button" onclick="toggleBookmark(${post.id})" class="cursor-pointer transition ${post.isBookmarked ? 'text-pulse-cyan fa-solid fa-bookmark' : 'text-pulse-muted hover:text-pulse-cyan fa-regular fa-bookmark'}"></button>
                             </div>
-                            <div class="px-3 text-sm font-semibold mb-1">${post.likesCount || post.likes} likes</div>
-                            <div class="px-3 text-sm">
-                                <span class="font-semibold mr-2 cursor-pointer" onclick="viewUserProfile('${post.username}')">${post.username}</span>
-                                <span class="post-caption">${post.caption}</span>
+                            <div class="text-xs font-semibold mb-1 text-white">${post.likesCount || post.likes} reactions</div>
+                            <div class="text-xs text-pulse-text mb-2">
+                                <span class="font-bold mr-2 text-white cursor-pointer" onclick="viewUserProfile('${post.username}')">${post.username}</span>
+                                <span>${post.caption}</span>
                             </div>
-                            <div onclick="openCommentsModal(${post.id})" class="px-3 text-sm text-ig-muted mt-1 cursor-pointer">
-                                Lihat semua ${post.commentsList ? post.commentsList.length : post.comments} komentar
+                            <div onclick="openCommentsModal(${post.id})" class="text-xs text-pulse-muted cursor-pointer hover:underline mb-1">
+                                Lihat semua ${post.commentsList ? post.commentsList.length : post.comments} diskusi
                             </div>
-                            <div class="px-3 text-xs text-ig-muted mt-1">${post.time} &bull; <span class="text-ig-text cursor-pointer hover:underline">See translation</span></div>
+                            <div class="text-[10px] text-pulse-muted">${post.time} &bull; <span class="text-pulse-cyan cursor-pointer hover:underline">Translate Node</span></div>
                         </div>
                     `).join('')}
                 </div>
@@ -194,46 +203,47 @@
 
         function renderExploreTemplate() {
             return `
-                <div class="p-3 sticky top-0 bg-ig-bg z-30 border-b border-ig-border flex items-center gap-2">
-                    <div class="flex-1 bg-ig-surface border border-ig-border rounded-xl px-3 py-2 flex items-center gap-2">
-                        <i class="fa-solid fa-magnifying-glass text-ig-muted"></i>
-                        <input type="text" id="explore-search-input" oninput="handleExploreSearch(this.value)" placeholder="Cari akun atau topik..." class="bg-transparent text-sm w-full focus:outline-none text-white">
+                <div class="p-3 sticky top-0 bg-pulse-bg z-30 border-b border-pulse-border flex items-center gap-2">
+                    <div class="flex-1 bg-pulse-surface border border-pulse-border rounded-xl px-3 py-2 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass text-pulse-muted text-xs"></i>
+                        <input type="text" id="explore-search-input" oninput="handleExploreSearch(this.value)" placeholder="Eksplorasi repositori, kreator, atau tag..." class="bg-transparent text-xs w-full focus:outline-none text-white">
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-[2px] pb-14" id="explore-grid">
-                    <div onclick="openExploreDetail(1)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
-                    <div onclick="openExploreDetail(2)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
-                    <div onclick="openExploreDetail(3)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
-                    <div onclick="openExploreDetail(4)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
-                    <div onclick="openExploreDetail(5)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
-                    <div onclick="openExploreDetail(6)" class="bg-ig-surface h-36 relative overflow-hidden cursor-pointer group"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                <div class="grid grid-cols-3 gap-1.5 p-2 pb-14" id="explore-grid">
+                    <div onclick="openExploreDetail(1)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                    <div onclick="openExploreDetail(2)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                    <div onclick="openExploreDetail(3)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                    <div onclick="openExploreDetail(4)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                    <div onclick="openExploreDetail(5)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
+                    <div onclick="openExploreDetail(6)" class="bg-pulse-surface h-36 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border"><img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=300" class="w-full h-full object-cover group-hover:scale-105 transition"></div>
                 </div>
             `;
         }
 
         function renderReelsTemplate() {
             return `
-                <div class="relative w-full h-full bg-black flex flex-col justify-between pb-14">
+                <div class="relative w-full h-full bg-pulse-bg flex flex-col justify-between pb-14">
                     <div class="absolute inset-0 z-0">
-                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600" class="w-full h-full object-cover opacity-90">
+                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600" class="w-full h-full object-cover opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40"></div>
                     </div>
                     <div class="absolute top-4 left-4 right-4 z-20 flex justify-between items-center">
-                        <span class="text-xl font-bold">Reels</span>
-                        <button type="button" onclick="openCreateReelModal()" class="cursor-pointer hover:text-ig-muted"><i class="fa-solid fa-camera text-xl"></i></button>
+                        <span class="text-base font-bold text-white">Pulse Streams</span>
+                        <button type="button" onclick="openCreateReelModal()" class="cursor-pointer text-pulse-cyan hover:text-white"><i class="fa-solid fa-video text-lg"></i></button>
                     </div>
                     <div class="absolute bottom-16 left-4 right-16 z-20 flex flex-col gap-2">
                         <div class="flex items-center gap-2">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-full border">
-                            <span class="font-semibold text-sm">chloegreynolds</span>
-                            <button type="button" onclick="toggleFollowReelUser(this)" class="border border-white px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer hover:bg-white hover:text-black transition">Follow</button>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="w-8 h-8 rounded-xl border border-pulse-cyan">
+                            <span class="font-semibold text-xs text-white">chloegreynolds</span>
+                            <button type="button" onclick="toggleFollowReelUser(this)" class="bg-pulse-cyan text-black px-3 py-1 rounded-lg text-[10px] font-bold cursor-pointer hover:opacity-90 transition">Connect</button>
                         </div>
-                        <p class="text-sm">two descents today...</p>
+                        <p class="text-xs text-pulse-text">Optimizing microservices pipeline today...</p>
                     </div>
                     <div class="absolute bottom-20 right-4 z-20 flex flex-col items-center gap-4 text-white">
-                        <div onclick="toggleReelLike(this)" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-heart text-2xl text-red-500"></i><span class="text-xs">33K</span></div>
-                        <div onclick="openReelComments()" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-comment text-2xl"></i><span class="text-xs">3,810</span></div>
-                        <div onclick="shareReel()" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-share text-2xl"></i><span class="text-xs">9,335</span></div>
-                        <i class="fa-solid fa-ellipsis-vertical text-xl cursor-pointer"></i>
+                        <div onclick="toggleReelLike(this)" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-heart text-xl text-red-500"></i><span class="text-[10px]">33K</span></div>
+                        <div onclick="openReelComments()" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-comment text-xl"></i><span class="text-[10px]">3.8K</span></div>
+                        <div onclick="shareReel()" class="flex flex-col items-center cursor-pointer"><i class="fa-solid fa-share text-xl"></i><span class="text-[10px]">9.3K</span></div>
+                        <i class="fa-solid fa-ellipsis-vertical text-lg cursor-pointer"></i>
                     </div>
                 </div>
             `;
@@ -244,35 +254,35 @@
                 return renderChatRoomTemplate();
             }
             return `
-                <div class="p-3 bg-ig-bg sticky top-0 z-30 border-b border-ig-border flex justify-between items-center">
-                    <div class="flex items-center gap-2 font-bold text-lg cursor-pointer" onclick="openAccountSelector()">
+                <div class="p-3 bg-pulse-bg sticky top-0 z-30 border-b border-pulse-border flex justify-between items-center">
+                    <div class="flex items-center gap-2 font-bold text-sm text-white cursor-pointer" onclick="openAccountSelector()">
                         <span>${appState.currentUser ? appState.currentUser.username : 'vanandii'}</span>
-                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
                     </div>
-                    <div class="flex gap-5 text-xl cursor-pointer">
-                        <button type="button" onclick="openNewMessageModal()"><i class="fa-regular fa-pen-to-square"></i></button>
+                    <div class="flex gap-4 text-lg text-pulse-text cursor-pointer">
+                        <button type="button" onclick="openNewMessageModal()"><i class="fa-solid fa-square-pen"></i></button>
                     </div>
                 </div>
                 <div class="p-3">
-                    <div class="bg-ig-surface border border-ig-border rounded-xl px-3 py-2 flex items-center gap-2 mb-4">
-                        <i class="fa-solid fa-magnifying-glass text-ig-muted"></i>
-                        <input type="text" placeholder="Search or ask Meta AI" class="bg-transparent text-sm w-full focus:outline-none text-white">
+                    <div class="bg-pulse-surface border border-pulse-border rounded-xl px-3 py-2 flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-magnifying-glass text-pulse-muted text-xs"></i>
+                        <input type="text" placeholder="Cari channel atau AI Assistant..." class="bg-transparent text-xs w-full focus:outline-none text-white">
                     </div>
                     <div class="flex justify-between items-center mb-3">
-                        <span class="font-bold text-sm">Messages</span>
-                        <span class="text-ig-blue text-sm font-semibold cursor-pointer" onclick="openMessageRequests()">Requests</span>
+                        <span class="font-bold text-xs text-pulse-muted uppercase tracking-wider">Direct Channels</span>
+                        <span class="text-pulse-cyan text-xs font-semibold cursor-pointer" onclick="openMessageRequests()">Requests</span>
                     </div>
-                    <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-2">
                         ${appState.messages.map((msg, index) => `
-                            <div onclick="openChatRoom(${index})" class="flex items-center justify-between cursor-pointer hover:bg-ig-hover p-2 rounded-xl transition">
+                            <div onclick="openChatRoom(${index})" class="flex items-center justify-between cursor-pointer hover:bg-pulse-hover p-2.5 rounded-xl border border-transparent hover:border-pulse-border transition">
                                 <div class="flex items-center gap-3">
-                                    <img src="${msg.avatar}" class="w-12 h-12 rounded-full object-cover">
+                                    <img src="${msg.avatar}" class="w-10 h-10 rounded-xl object-cover border border-pulse-border">
                                     <div>
-                                        <div class="text-sm font-semibold">${msg.name}</div>
-                                        <div class="text-xs text-ig-muted">${msg.preview}</div>
+                                        <div class="text-xs font-bold text-white">${msg.name}</div>
+                                        <div class="text-[11px] text-pulse-muted">${msg.preview}</div>
                                     </div>
                                 </div>
-                                ${msg.unread ? '<div class="w-2 h-2 bg-ig-blue rounded-full"></div>' : ''}
+                                ${msg.unread ? '<div class="w-2 h-2 bg-pulse-cyan rounded-full"></div>' : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -283,40 +293,40 @@
         function renderChatRoomTemplate() {
             const chatUser = appState.activeChatUser;
             return `
-                <div class="p-3 bg-ig-bg sticky top-0 z-30 border-b border-ig-border flex items-center justify-between">
+                <div class="p-3 bg-pulse-bg sticky top-0 z-30 border-b border-pulse-border flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <button type="button" onclick="closeChatRoom()" class="text-xl text-white cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
-                        <img src="${chatUser.avatar}" class="w-9 h-9 rounded-full object-cover">
+                        <button type="button" onclick="closeChatRoom()" class="text-lg text-white cursor-pointer"><i class="fa-solid fa-arrow-left"></i></button>
+                        <img src="${chatUser.avatar}" class="w-8 h-8 rounded-xl object-cover border border-pulse-border">
                         <div>
-                            <div class="font-bold text-sm">${chatUser.name}</div>
-                            <div class="text-[10px] text-ig-muted">Active recently</div>
+                            <div class="font-bold text-xs text-white">${chatUser.name}</div>
+                            <div class="text-[9px] text-pulse-cyan">Node Online</div>
                         </div>
                     </div>
-                    <div class="flex gap-4 text-xl text-white">
+                    <div class="flex gap-4 text-base text-white">
                         <i class="fa-solid fa-phone cursor-pointer"></i>
                         <i class="fa-solid fa-video cursor-pointer"></i>
-                        <i class="fa-solid fa-circle-info cursor-pointer"></i>
+                        <i class="fa-solid fa-shield-halved cursor-pointer"></i>
                     </div>
                 </div>
                 <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 pb-20" id="chat-messages-container">
                     <div class="text-center my-4">
-                        <img src="${chatUser.avatar}" class="w-20 h-20 rounded-full mx-auto mb-2 object-cover">
-                        <h3 class="font-bold text-base">${chatUser.name}</h3>
-                        <p class="text-xs text-ig-muted">Instagram &bull; Berteman di IG</p>
+                        <img src="${chatUser.avatar}" class="w-16 h-16 rounded-2xl mx-auto mb-2 object-cover border border-pulse-cyan">
+                        <h3 class="font-bold text-sm text-white">${chatUser.name}</h3>
+                        <p class="text-[10px] text-pulse-muted">SmartCore Encrypted Channel</p>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <div class="self-start bg-ig-surface border border-ig-border px-3 py-2 rounded-2xl max-w-[75%] text-sm">
-                            Halo! Senang bisa terhubung di SmartCore Instagram.
+                        <div class="self-start bg-pulse-surface border border-pulse-border px-3 py-2 rounded-xl max-w-[80%] text-xs text-white">
+                            Halo! Kesiapan node sudah tervalidasi di SmartCore Pulse.
                         </div>
-                        <div class="self-end bg-ig-blue text-white px-3 py-2 rounded-2xl max-w-[75%] text-sm">
-                            Halo juga! Fiturnya keren dan responsif banget.
+                        <div class="self-end bg-gradient-to-r from-cyan-500 to-indigo-600 text-black font-medium px-3 py-2 rounded-xl max-w-[80%] text-xs">
+                            Mantap! Arsitektur desentralisasinya berjalan mulus.
                         </div>
                     </div>
                 </div>
-                <div class="absolute bottom-0 left-0 right-0 p-3 bg-ig-bg border-t border-ig-border flex items-center gap-3 z-40">
-                    <button type="button" class="text-xl text-ig-blue cursor-pointer"><i class="fa-solid fa-circle-plus"></i></button>
-                    <input type="text" id="chat-input-text" placeholder="Kirim pesan..." class="flex-1 bg-ig-surface border border-ig-border rounded-full px-4 py-2 text-sm focus:outline-none text-white" onkeypress="handleChatKeyPress(event)">
-                    <button type="button" onclick="sendChatMessage()" class="text-ig-blue font-semibold text-sm cursor-pointer px-2">Kirim</button>
+                <div class="absolute bottom-0 left-0 right-0 p-3 bg-pulse-bg border-t border-pulse-border flex items-center gap-2 z-40">
+                    <button type="button" class="text-lg text-pulse-cyan cursor-pointer"><i class="fa-solid fa-circle-plus"></i></button>
+                    <input type="text" id="chat-input-text" placeholder="Kirim pesan terenkripsi..." class="flex-1 bg-pulse-surface border border-pulse-border rounded-xl px-4 py-2 text-xs focus:outline-none text-white" onkeypress="handleChatKeyPress(event)">
+                    <button type="button" onclick="sendChatMessage()" class="text-pulse-cyan font-bold text-xs cursor-pointer px-2">Kirim</button>
                 </div>
             `;
         }
@@ -327,44 +337,44 @@
             const avatar = appState.currentUser && appState.currentUser.avatar ? appState.currentUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200';
             
             return `
-                <div class="p-4 bg-ig-bg pb-20">
+                <div class="p-4 bg-pulse-bg pb-20">
                     <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-1 font-bold text-xl cursor-pointer" onclick="openAccountSelector()">
-                            <i class="fa-solid fa-lock text-xs"></i>
+                        <div class="flex items-center gap-1 font-bold text-sm text-white cursor-pointer" onclick="openAccountSelector()">
+                            <i class="fa-solid fa-shield-check text-pulse-cyan text-xs"></i>
                             <span>${username}</span>
-                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </div>
-                        <div class="flex gap-5 text-xl cursor-pointer">
+                        <div class="flex gap-4 text-lg text-pulse-text cursor-pointer">
                             <button type="button" onclick="openCreatePostModal()"><i class="fa-solid fa-square-plus"></i></button>
-                            <button type="button" onclick="openSettingsModal()"><i class="fa-solid fa-bars"></i></button>
+                            <button type="button" onclick="openSettingsModal()"><i class="fa-solid fa-bars-staggered"></i></button>
                         </div>
                     </div>
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-20 h-20 rounded-full overflow-hidden border border-ig-border">
+                        <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-pulse-cyan shadow-md">
                             <img src="${avatar}" class="w-full h-full object-cover">
                         </div>
-                        <div class="flex justify-around flex-1 ml-6 text-center">
-                            <div><div class="font-bold text-lg">${appState.posts.filter(p => p.username === username).length || 1}</div><div class="text-xs text-ig-muted">posts</div></div>
-                            <div><div class="font-bold text-lg">3,692</div><div class="text-xs text-ig-muted">followers</div></div>
-                            <div><div class="font-bold text-lg">425</div><div class="text-xs text-ig-muted">following</div></div>
+                        <div class="flex justify-around flex-1 ml-4 text-center">
+                            <div><div class="font-bold text-base text-white">${appState.posts.filter(p => p.username === username).length || 1}</div><div class="text-[10px] text-pulse-muted">repos</div></div>
+                            <div><div class="font-bold text-base text-white">3.6K</div><div class="text-[10px] text-pulse-muted">watchers</div></div>
+                            <div><div class="font-bold text-base text-white">425</div><div class="text-[10px] text-pulse-muted">forks</div></div>
                         </div>
                     </div>
                     <div class="mb-4">
-                        <div class="text-sm font-semibold">${name}</div>
-                        <div class="text-sm text-ig-muted mt-1"><i class="fa-solid fa-play text-xs mr-1"></i> Cold Mind Warm Heart &bull; Ezra_gp</div>
+                        <div class="text-xs font-bold text-white">${name}</div>
+                        <div class="text-xs text-pulse-muted mt-1"><i class="fa-solid fa-terminal text-xs mr-1 text-pulse-cyan"></i> Full Stack Developer &bull; SmartCore Node</div>
                     </div>
                     <div class="flex gap-2 mb-6">
-                        <button type="button" onclick="openEditProfileModal()" class="flex-1 bg-ig-surface border border-ig-border font-semibold py-2 rounded-lg text-sm hover:bg-ig-hover transition cursor-pointer">Edit profile</button>
-                        <button type="button" onclick="shareProfileLink()" class="flex-1 bg-ig-surface border border-ig-border font-semibold py-2 rounded-lg text-sm hover:bg-ig-hover transition cursor-pointer">Share profile</button>
+                        <button type="button" onclick="openEditProfileModal()" class="flex-1 bg-pulse-surface border border-pulse-border font-semibold py-2 rounded-xl text-xs hover:bg-pulse-hover transition cursor-pointer text-white">Edit Persona</button>
+                        <button type="button" onclick="shareProfileLink()" class="flex-1 bg-pulse-surface border border-pulse-border font-semibold py-2 rounded-xl text-xs hover:bg-pulse-hover transition cursor-pointer text-white">Share Node</button>
                     </div>
-                    <div class="flex border-t border-ig-border justify-around">
-                        <button type="button" class="flex-1 py-3 border-b-2 border-white text-xl cursor-pointer"><i class="fa-solid fa-table-cells"></i></button>
-                        <button type="button" class="flex-1 py-3 text-ig-muted text-xl cursor-pointer" onclick="switchTab('reels')"><i class="fa-solid fa-clapperboard"></i></button>
-                        <button type="button" class="flex-1 py-3 text-ig-muted text-xl cursor-pointer"><i class="fa-regular fa-id-badge"></i></button>
+                    <div class="flex border-t border-pulse-border justify-around">
+                        <button type="button" class="flex-1 py-3 border-b-2 border-pulse-cyan text-lg text-white cursor-pointer"><i class="fa-solid fa-code"></i></button>
+                        <button type="button" class="flex-1 py-3 text-pulse-muted text-lg cursor-pointer" onclick="switchTab('reels')"><i class="fa-solid fa-bolt"></i></button>
+                        <button type="button" class="flex-1 py-3 text-pulse-muted text-lg cursor-pointer"><i class="fa-solid fa-bookmark"></i></button>
                     </div>
-                    <div class="grid grid-cols-3 gap-[2px] mt-1" id="user-posts-grid">
+                    <div class="grid grid-cols-3 gap-1.5 mt-2" id="user-posts-grid">
                         ${appState.posts.filter(p => p.username === username || true).map(p => `
-                            <div class="bg-ig-surface h-32 relative overflow-hidden cursor-pointer group">
+                            <div class="bg-pulse-surface h-32 rounded-lg relative overflow-hidden cursor-pointer group border border-pulse-border">
                                 <img src="${p.mediaUrl}" class="w-full h-full object-cover group-hover:scale-105 transition">
                             </div>
                         `).join('')}
@@ -389,7 +399,7 @@
                     username: 'ynwaruss888',
                     userAvatar: 'https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=100',
                     mediaUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600',
-                    caption: 'just a normal day',
+                    caption: 'deploying microservices pipeline to production nodes',
                     likes: '105',
                     likesCount: 105,
                     comments: '758',
@@ -397,27 +407,27 @@
                     isLiked: false,
                     isBookmarked: false,
                     commentsList: [
-                        { username: 'zidanarraff', text: 'Keren banget fotonya!' },
+                        { username: 'zidanarraff', text: 'Arsitektur node-nya bersih banget!' },
                         { username: 'matchinn_.', text: 'Mantap bro 🔥' }
                     ]
                 }
             ],
             stories: [
-                { name: 'Your story', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100', isSelf: true },
+                { name: 'Your Node', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100', isSelf: true },
                 { name: 'matchinn_.', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100' },
                 { name: 'zidanarraff', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100' },
                 { name: 'chocolatte', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100' }
             ],
             messages: [
-                { name: 'tbh.juliet18', preview: 'Sent 8h ago', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100', unread: true },
-                { name: 'ú ni', preview: 'Sent', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=100', unread: false },
-                { name: 'NUTA FAMILY 💜', preview: '4+ new messages · 59m', avatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100', unread: true },
-                { name: 'INGFO INGFO 🔊', preview: '4+ new messages · 1h', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100', unread: true }
+                { name: 'tbh.juliet18', preview: 'Encrypted channel active 8h ago', avatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100', unread: true },
+                { name: 'ú ni', preview: 'Node sync completed', avatar: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=100', unread: false },
+                { name: 'NUTA FAMILY 💜', preview: '4+ new broadcasts · 59m', avatar: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100', unread: true },
+                { name: 'INGFO PULSE 🔊', preview: '4+ system alerts · 1h', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100', unread: true }
             ]
         };
 
-        const STORAGE_KEY_STATE = 'SMARTCORE_STATE';
-        const STORAGE_KEY_FORM = 'SMARTCORE_FORM_BACKUP';
+        const STORAGE_KEY_STATE = 'SMARTCORE_PULSE_STATE';
+        const STORAGE_KEY_FORM = 'SMARTCORE_PULSE_FORM_BACKUP';
 
         function saveStateToStorage() {
             try {
@@ -425,7 +435,7 @@
             } catch (e) {
                 if (e.name === 'QuotaExceededError') {
                     console.error('LocalStorage quota exceeded:', e);
-                    alert('Peringatan: Penyimpanan lokal penuh. Data terbaru mungkin tidak tersimpan secara permanen.');
+                    alert('Peringatan: Penyimpanan lokal penuh. Data terbaru tidak dapat disimpan secara permanen.');
                 } else {
                     console.error('LocalStorage error:', e);
                 }
@@ -460,13 +470,13 @@
             const adminForm = document.getElementById('auth-form-admin');
 
             if (type === 'user') {
-                userTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-ig-blue text-white transition-all cursor-pointer";
-                adminTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-ig-muted transition-all cursor-pointer";
+                userTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-pulse-cyan text-black transition-all cursor-pointer";
+                adminTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-pulse-muted transition-all cursor-pointer";
                 userForm.classList.remove('hidden');
                 adminForm.classList.add('hidden');
             } else {
-                adminTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-ig-blue text-white transition-all cursor-pointer";
-                userTab.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-ig-muted transition-all cursor-pointer";
+                adminTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-pulse-cyan text-black transition-all cursor-pointer";
+                userTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-pulse-muted transition-all cursor-pointer";
                 adminForm.classList.remove('hidden');
                 userForm.classList.add('hidden');
             }
@@ -474,13 +484,13 @@
 
         function loginWithGmail() {
             appState.currentUser = {
-                username: "gmail_user",
-                name: "Gmail User",
-                email: "user.gmail.account@gmail.com",
+                username: "pulse_workspace",
+                name: "Workspace Member",
+                email: "user.workspace@gmail.com",
                 role: "user",
                 avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100"
             };
-            appState.token = "gmail_oauth_token_" + Date.now();
+            appState.token = "pulse_oauth_token_" + Date.now();
             appState.isAdmin = false;
             finishAuthentication();
         }
@@ -490,7 +500,7 @@
             const passInput = document.getElementById('user-pass').value.trim();
 
             if (!emailInput || !passInput) {
-                alert('Silakan masukkan email dan kata sandi.');
+                alert('Silakan masukkan email/nama kreator dan kunci akses.');
                 return;
             }
 
@@ -501,7 +511,7 @@
                 role: 'user',
                 avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'
             };
-            appState.token = 'user_token_' + Date.now();
+            appState.token = 'pulse_user_token_' + Date.now();
             appState.isAdmin = false;
             finishAuthentication();
         }
@@ -523,14 +533,14 @@
 
                 appState.currentUser = {
                     username: githubData.login || usernameInput,
-                    name: githubData.name || 'Developer Admin',
+                    name: githubData.name || 'Developer Node Admin',
                     avatar: githubData.avatar_url,
                     role: 'admin'
                 };
             } catch (error) {
                 appState.currentUser = {
                     username: usernameInput,
-                    name: 'GitHub Developer',
+                    name: 'GitHub Node Developer',
                     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
                     role: 'admin'
                 };
@@ -574,11 +584,11 @@
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 const tab = btn.getAttribute('data-tab');
                 if (tab === appState.activeTab) {
-                    btn.classList.remove('text-ig-muted');
+                    btn.classList.remove('text-pulse-muted');
                     btn.classList.add('text-white');
                 } else {
                     btn.classList.remove('text-white');
-                    btn.classList.add('text-ig-muted');
+                    btn.classList.add('text-pulse-muted');
                 }
             });
 
@@ -631,26 +641,26 @@
 
             const comments = post.commentsList || [];
             modal.innerHTML = `
-                <div class="bg-ig-surface w-full max-h-[80vh] rounded-t-2xl flex flex-col border-t border-ig-border animate-slide-up">
-                    <div class="flex justify-between items-center p-3 border-b border-ig-border">
-                        <span class="font-bold text-sm mx-auto">Komentar (${comments.length})</span>
-                        <button type="button" onclick="closeDynamicModal()" class="text-xl cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+                <div class="bg-pulse-surface w-full max-h-[80vh] rounded-t-2xl flex flex-col border-t border-pulse-border animate-slide-up">
+                    <div class="flex justify-between items-center p-3 border-b border-pulse-border">
+                        <span class="font-bold text-xs text-white mx-auto">Diskusi Node (${comments.length})</span>
+                        <button type="button" onclick="closeDynamicModal()" class="text-lg text-pulse-muted hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div class="flex-1 p-4 overflow-y-auto flex flex-col gap-3 max-h-[50vh]">
-                        ${comments.length === 0 ? '<p class="text-center text-xs text-ig-muted py-6">Belum ada komentar. Jadilah yang pertama berkomentar!</p>' : 
+                        ${comments.length === 0 ? '<p class="text-center text-xs text-pulse-muted py-6">Belum ada diskusi. Mulai percakapan sekarang!</p>' : 
                             comments.map(c => `
                                 <div class="flex items-start gap-3">
-                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-8 h-8 rounded-full object-cover">
+                                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-8 h-8 rounded-xl object-cover border border-pulse-border">
                                     <div class="flex-1">
-                                        <div class="text-xs font-semibold">${c.username}</div>
-                                        <div class="text-xs text-ig-text mt-0.5">${c.text}</div>
+                                        <div class="text-xs font-bold text-white">${c.username}</div>
+                                        <div class="text-xs text-pulse-text mt-0.5">${c.text}</div>
                                     </div>
                                 </div>
                             `).join('')}
                     </div>
-                    <div class="p-3 border-t border-ig-border flex items-center gap-2 bg-ig-bg">
-                        <input type="text" id="new-comment-input" placeholder="Tambahkan komentar..." class="flex-1 bg-ig-surface border border-ig-border rounded-full px-4 py-2 text-xs focus:outline-none text-white">
-                        <button type="button" onclick="submitComment(${postId})" class="text-ig-blue font-semibold text-xs cursor-pointer px-3">Kirim</button>
+                    <div class="p-3 border-t border-pulse-border flex items-center gap-2 bg-pulse-bg">
+                        <input type="text" id="new-comment-input" placeholder="Tulis tanggapan diskusi..." class="flex-1 bg-pulse-surface border border-pulse-border rounded-xl px-4 py-2 text-xs focus:outline-none text-white">
+                        <button type="button" onclick="submitComment(${postId})" class="text-pulse-cyan font-bold text-xs cursor-pointer px-3">Kirim</button>
                     </div>
                 </div>
             `;
@@ -688,7 +698,7 @@
                 appState.posts = appState.posts.filter(p => p.id !== postId);
                 saveStateToStorage();
                 renderAll();
-                alert('Postingan berhasil dihapus.');
+                alert('Postingan berhasil dihapus dari node.');
             }
         }
 
@@ -699,20 +709,20 @@
 
         function shareProfileLink() {
             navigator.clipboard?.writeText(window.location.href);
-            alert('Tautan profil berhasil disalin!');
+            alert('Tautan node profil berhasil disalin!');
         }
 
         function shareReel() {
-            alert('Tautan Reel berhasil dibagikan!');
+            alert('Tautan Pulse Stream berhasil disalin!');
         }
 
         function viewStory(index) {
             const story = appState.stories[index];
-            alert(`Melihat Story dari: ${story.name}`);
+            alert(`Melihat Node Broadcast dari: ${story.name}`);
         }
 
         function viewUserProfile(username) {
-            alert(`Membuka profil akun: @${username}`);
+            alert(`Membuka profil kreator: @${username}`);
         }
 
         function handleExploreSearch(query) {
@@ -720,7 +730,7 @@
         }
 
         function openExploreDetail(id) {
-            alert(`Membuka detail media explore #${id}`);
+            alert(`Membuka detail repositori explore #${id}`);
         }
 
         function openChatRoom(index) {
@@ -747,7 +757,7 @@
             const container = document.getElementById('chat-messages-container');
             if (container) {
                 const bubble = document.createElement('div');
-                bubble.className = 'self-end bg-ig-blue text-white px-3 py-2 rounded-2xl max-w-[75%] text-sm';
+                bubble.className = 'self-end bg-gradient-to-r from-cyan-500 to-indigo-600 text-black font-medium px-3 py-2 rounded-xl max-w-[80%] text-xs';
                 bubble.textContent = input.value.trim();
                 container.appendChild(bubble);
                 input.value = '';
@@ -762,7 +772,7 @@
         }
 
         function openNewMessageModal() {
-            const name = prompt('Masukkan nama pengguna untuk pesan baru:');
+            const name = prompt('Masukkan nama channel untuk percakapan baru:');
             if (name) {
                 appState.messages.unshift({
                     name: name,
@@ -772,23 +782,23 @@
                 });
                 saveStateToStorage();
                 renderAll();
-                alert(`Pesan baru dengan ${name} dibuat.`);
+                alert(`Channel baru dengan ${name} dibuat.`);
             }
         }
 
         function openMessageRequests() {
-            alert('Tidak ada permintaan pesan (Message Requests).');
+            alert('Tidak ada permintaan channel terenkripsi baru.');
         }
 
         function openCreatePostModal() {
-            const caption = prompt('Tulis keterangan / caption postingan baru Anda:');
+            const caption = prompt('Tulis deskripsi / repositori update baru Anda:');
             if(caption !== null) {
                 const newPost = {
                     id: Date.now(),
                     username: appState.currentUser ? appState.currentUser.username : 'vanandii',
                     userAvatar: appState.currentUser && appState.currentUser.avatar ? appState.currentUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
                     mediaUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600',
-                    caption: caption || 'New update via SmartCore Engine',
+                    caption: caption || 'New update via SmartCore Pulse Engine',
                     likes: '1',
                     likesCount: 1,
                     comments: '0',
@@ -800,12 +810,12 @@
                 appState.posts.unshift(newPost);
                 saveStateToStorage();
                 renderAll();
-                alert('Postingan berhasil diterbitkan!');
+                alert('Postingan berhasil dipublikasikan ke network!');
             }
         }
 
         function openEditProfileModal() {
-            const newName = prompt('Masukkan nama baru Anda:', appState.currentUser ? appState.currentUser.name : '');
+            const newName = prompt('Masukkan nama persona baru Anda:', appState.currentUser ? appState.currentUser.name : '');
             if (newName !== null) {
                 if (appState.currentUser) {
                     appState.currentUser.name = newName;
@@ -814,12 +824,12 @@
                 }
                 saveStateToStorage();
                 renderAll();
-                alert('Profil berhasil diperbarui!');
+                alert('Persona berhasil diperbarui!');
             }
         }
 
         function openSettingsModal() {
-            const action = confirm('Menu Pengaturan:\nOK = Keluar Akun (Logout)\nCancel = Batal');
+            const action = confirm('Menu Pengaturan Node:\nOK = Putuskan Sesi Node (Logout)\nCancel = Batal');
             if (action) {
                 localStorage.removeItem(STORAGE_KEY_STATE);
                 location.reload();
@@ -827,25 +837,27 @@
         }
 
         function openAccountSelector() {
-            alert('Akun aktif saat ini: @' + (appState.currentUser ? appState.currentUser.username : 'vanandii'));
+            alert('Node aktif saat ini: @' + (appState.currentUser ? appState.currentUser.username : 'vanandii'));
         }
 
         function toggleReelLike(el) {
-            alert('Reel disukai!');
+            alert('Pulse Stream disukai!');
         }
 
         function toggleFollowReelUser(el) {
-            el.textContent = el.textContent === 'Follow' ? 'Following' : 'Follow';
-            el.classList.toggle('bg-white');
+            el.textContent = el.textContent === 'Connect' ? 'Connected' : 'Connect';
+            el.classList.toggle('bg-pulse-cyan');
+            el.classList.toggle('bg-pulse-surface');
             el.classList.toggle('text-black');
+            el.classList.toggle('text-white');
         }
 
         function openReelComments() {
-            alert('Membuka komentar Reels...');
+            alert('Membuka diskusi Pulse Stream...');
         }
 
         function openCreateReelModal() {
-            alert('Fitur rekam/upload Reels dibuka.');
+            alert('Fitur unggah Pulse Stream dibuka.');
         }
 
         window.onload = function() {
@@ -861,3 +873,31 @@
     </script>
 </body>
 </html>
+
+---
+Bertindaklah sebagai: Senior Full Stack Developer & UI/UX Expert.
+
+## RIWAYAT PERUBAHAN (VERSION HISTORY)
+- v1.0: Clean slate & initial protocol setup.
+- v1.5: Implementasi lengkap seluruh fitur interaktif & State Engine dengan LocalStorage persistensi dan Error Handling QuotaExceeded.
+- v2.0: Perombakan total platform menjadi **SmartCore Pulse** (ekosistem jejaring kreator & pengembang independen) dengan desain futuristik dark-mode, integrasi GitHub API/Google Workspace, serta fungsionalitas reaktif menyeluruh.
+
+## PROTOKOL UTAMA & ARSITEKTUR KODE
+1. **Aturan Chunking "v" (3 Tahap Bertahap)**: 
+   - **Bagian 1 (HTML Skeleton & Global CSS)** dikirim setelah prompt ini.
+   - Setelah saya membalas **"v"**, lanjutkan ke **Bagian 2 (Main Workspace & UI Components)**.
+   - Setelah saya membalas **"v"**, lanjutkan ke **Bagian 3 (JavaScript State Engine & Core Logic)**.
+2. **Aturan Non-Destruktif & Placeholder**: 
+   - Dilarang keras mengubah, memindahkan, atau menghapus kode, fungsi, dan struktur yang sudah ada kecuali diminta secara eksplisit. Pertahankan kode lama 100% utuh.
+   - Untuk efisiensi token, Anda diperbolehkan menggunakan komentar penanda (contoh: `// ... kode sebelumnya tetap utuh ...` atau `/* ... pertahankan bagian ini ... */`) khusus untuk bagian kode yang tidak mengalami perubahan.
+3. **Penutup Siklus (Self-Perpetuating Loop)**: 
+   - Setelah pengiriman Bagian 3 selesai dan saya membalas **"v"** sebagai konfirmasi akhir, Anda **WAJIB** mengirimkan kembali format prompt ini secara lengkap (dengan *Version History* yang sudah diperbarui) di bagian paling bawah respons Anda.
+
+## ARSITEKTUR MEMORI & STATE (PERSISTENSI)
+- **State Management**: Terpusat pada objek global `appState`.
+- **Persistensi**: Menggunakan `localStorage` dengan key `SMARTCORE_PULSE_STATE` (data utama) dan `SMARTCORE_PULSE_FORM_BACKUP` (input sementara).
+- **Sinkronisasi**: Setiap mutasi data (Tambah, Edit, Hapus, Navigasi Tab) wajib memicu fungsi `saveStateToStorage()` dan `renderAll()`.
+- **Error Handling**: Wajib menyertakan blok `try-catch` pada operasi `localStorage` untuk mengantisipasi error kuota penuh (`QuotaExceededError`).
+
+## INPUT DATA & PERINTAH SAAT INI
+- [MASUKKAN FITUR BARU, PERBAIKAN BUG, ATAU MODIFIKASI DI SINI]
