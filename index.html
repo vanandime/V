@@ -146,14 +146,14 @@
         </div>
     </div>
 
-    <!-- Instagram-style Bottom Navigation Bar for Mobile -->
+    <!-- Instagram-style Bottom Navigation Bar for Mobile (Using matching icons) -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 h-16 ig-glass flex items-center justify-around px-4 z-40 border-t border-[#27272a]" style="background: rgba(9, 9, 11, 0.95);">
         <button onclick="switchTab('dashboard')" class="flex flex-col items-center justify-center text-zinc-400 hover:text-white transition-smooth" id="bottom-nav-dashboard">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[10px] mt-1 font-medium">Dashboard</span>
         </button>
         <button onclick="switchTab('management')" class="flex flex-col items-center justify-center text-zinc-400 hover:text-white transition-smooth" id="bottom-nav-management">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
             <span class="text-[10px] mt-1 font-medium">Management</span>
         </button>
     </div>
@@ -352,7 +352,7 @@
             currentTab: 'dashboard',
             searchQuery: '',
             lastSyncTime: null,
-            sidebarOpen: true, // Default open on desktop
+            sidebarOpen: true,
             githubConfig: {
                 owner: '',
                 repo: '',
@@ -361,7 +361,7 @@
                 token: 'Ghp_Y2Nze7x9V3QAkbGNgtFBVRzKeNgnCv0sxnc5'
             },
             navItems: [
-                { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-16zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-16z"/></svg>' },
+                { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
                 { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
             ],
             items: [
@@ -434,7 +434,7 @@
                 const contentData = JSON.stringify({
                     items: appState.items,
                     updatedAt: new Date().toISOString(),
-                    version: '1.8'
+                    version: '1.9'
                 }, null, 2);
 
                 const base64Content = btoa(unescape(encodeURIComponent(contentData)));
@@ -533,7 +533,7 @@
             if (!sidebar) return;
 
             if (appState.sidebarOpen) {
-                sidebar.style.width = '18rem'; // w-72 equivalent
+                sidebar.style.width = '18rem';
                 sidebar.style.transform = 'translateX(0)';
                 if (window.innerWidth < 768 && backdrop) backdrop.classList.remove('hidden');
             } else {
