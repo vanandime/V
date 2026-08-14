@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCore Enterprise Workspace - Instagram Dark UI</title>
+    <title>SmartCore Enterprise Workspace - Instagram Dark UI v2.0</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -68,16 +68,6 @@
         .transition-smooth {
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .sidebar-closed {
-            transform: translateX(-100%) !important;
-        }
-        
-        @media (min-width: 768px) {
-            .sidebar-closed {
-                margin-left: -18rem; /* 72 = 18rem */
-            }
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white pb-16 md:pb-0">
@@ -88,31 +78,28 @@
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform -translate-x-full md:translate-x-0 transition-all duration-300 ease-in-out shadow-2xl md:shadow-none shrink-0">
-            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
+        <!-- Sidebar Navigation (Slide-over on Mobile, Static/Permanent on Desktop) -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none shrink-0">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a] shrink-0">
                 <div class="flex items-center space-x-3">
-                    <!-- Single Interactive Logo Button -->
-                    <button id="sidebar-toggle-btn" class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600/25 to-indigo-500/25 border border-brand-500/40 backdrop-blur-md shadow-inner hover:border-brand-500 hover:scale-105 transition-smooth cursor-pointer focus:outline-none shrink-0" title="Sembunyikan Sidebar">
-                        <svg class="w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                        </svg>
-                    </button>
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-600/30">
+                        SC
+                    </div>
                     <span class="font-bold text-lg tracking-tight text-white">SmartCore</span>
                 </div>
-                <!-- Close Button for Mobile Sidebar -->
+                <!-- Close Button for Mobile Drawer -->
                 <button id="sidebar-close" class="md:hidden text-zinc-400 hover:text-white p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
-            <!-- Navigation Links Container -->
+            <!-- Navigation Links Container (Scrollable) -->
             <nav id="nav-links" class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
                 <!-- Dynamic Navigation Rendered Here -->
             </nav>
 
-            <!-- Sidebar Footer / Status -->
-            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40">
+            <!-- Sidebar Footer / Status (Pinned securely at bottom) -->
+            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40 shrink-0">
                 <div class="flex items-center justify-between text-xs text-zinc-400">
                     <span>Storage Status</span>
                     <span id="storage-indicator" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">Optimal</span>
@@ -130,12 +117,14 @@
         <!-- Main Wrapper -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#000000]">
             
-            <!-- Sleek Header (Clean, No Logo) -->
+            <!-- Sleek Header -->
             <header class="h-16 ig-glass flex items-center justify-between px-4 md:px-8 z-10 shrink-0">
                 <div class="flex items-center space-x-3 md:space-x-4 min-w-0">
-                    <!-- Mobile Hamburger Toggle to open sidebar if needed -->
-                    <button id="mobile-hamburger-btn" class="md:hidden p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <!-- Branded Logo Toggle Button for Mobile -->
+                    <button id="sidebar-toggle" class="md:hidden p-1.5 rounded-xl bg-[#121214] hover:bg-[#27272a] border border-[#27272a] flex items-center space-x-2 text-zinc-200 transition-smooth shrink-0" title="Buka Menu">
+                        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs shadow-md">
+                            SC
+                        </div>
                     </button>
                     <h1 id="page-title" class="text-sm md:text-base font-semibold tracking-tight text-white truncate">Dashboard Overview</h1>
                 </div>
@@ -375,7 +364,7 @@
             },
             navItems: [
                 { id: 'dashboard', label: 'Dashboard', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-16zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-16z"/></svg>' },
-                { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
+                { id: 'management', label: 'Data Management', icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' }
             ],
             items: [
                 { id: 'REC-001', name: 'Core Gateway Server', category: 'Infrastructure', status: 'Active', createdAt: '2026-06-01 08:30' },
@@ -447,7 +436,7 @@
                 const contentData = JSON.stringify({
                     items: appState.items,
                     updatedAt: new Date().toISOString(),
-                    version: '1.12'
+                    version: '2.0'
                 }, null, 2);
 
                 const base64Content = btoa(unescape(encodeURIComponent(contentData)));
@@ -528,6 +517,7 @@
             appState.currentTab = tabId;
             saveStateToStorage();
             renderAll();
+            toggleMobileSidebar(false);
         }
 
         function renderAll() {
@@ -575,7 +565,6 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     switchTab(item.id);
-                    if (window.innerWidth < 768) toggleSidebar(false);
                 });
 
                 navContainer.appendChild(clone);
@@ -712,29 +701,17 @@
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
-        // Universal Toggle Sidebar Functionality
-        function toggleSidebar(forceState) {
+        function toggleMobileSidebar(show) {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
-            if (!sidebar) return;
-
-            const isMobile = window.innerWidth < 768;
-            const shouldClose = typeof forceState === 'boolean' ? !forceState : (isMobile ? !sidebar.classList.contains('-translate-x-full') : !sidebar.classList.contains('sidebar-closed'));
-
-            if (isMobile) {
-                if (shouldClose) {
-                    sidebar.classList.add('-translate-x-full');
-                    if (backdrop) backdrop.classList.add('hidden');
-                } else {
-                    sidebar.classList.remove('-translate-x-full');
-                    if (backdrop) backdrop.classList.remove('hidden');
-                }
+            if (!sidebar || !backdrop) return;
+            
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
             } else {
-                if (shouldClose) {
-                    sidebar.classList.add('sidebar-closed');
-                } else {
-                    sidebar.classList.remove('sidebar-closed');
-                }
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
             }
         }
 
@@ -742,47 +719,19 @@
             loadStateFromStorage();
             renderAll();
 
-            // Setup Logo Toggle Button inside Sidebar Header
-            const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
-            if (sidebarToggleBtn) {
-                sidebarToggleBtn.addEventListener('click', () => toggleSidebar());
-            }
-
-            // Mobile Hamburger Button in Header
-            const mobileHamburgerBtn = document.getElementById('mobile-hamburger-btn');
-            if (mobileHamburgerBtn) {
-                mobileHamburgerBtn.addEventListener('click', () => toggleSidebar(true));
-            }
-
+            const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarClose = document.getElementById('sidebar-close');
-            if (sidebarClose) {
-                sidebarClose.addEventListener('click', () => toggleSidebar(false));
-            }
-
             const backdrop = document.getElementById('sidebar-backdrop');
-            if (backdrop) {
-                backdrop.addEventListener('click', () => toggleSidebar(false));
-            }
 
-            // Backdrop click to close modals
-            const appModal = document.getElementById('app-modal');
-            if (appModal) {
-                appModal.addEventListener('click', (e) => {
-                    if (e.target === appModal) closeModal();
-                });
-            }
-
-            const ghModal = document.getElementById('github-modal');
-            if (ghModal) {
-                ghModal.addEventListener('click', (e) => {
-                    if (e.target === ghModal) ghModal.classList.add('hidden');
-                });
-            }
+            if (sidebarToggle) sidebarToggle.addEventListener('click', () => toggleMobileSidebar(true));
+            if (sidebarClose) sidebarClose.addEventListener('click', () => toggleMobileSidebar(false));
+            if (backdrop) backdrop.addEventListener('click', () => toggleMobileSidebar(false));
 
             document.getElementById('btn-close-modal')?.addEventListener('click', closeModal);
             document.getElementById('btn-cancel-modal')?.addEventListener('click', closeModal);
 
             const btnOpenGhConfig = document.getElementById('btn-open-github-config');
+            const ghModal = document.getElementById('github-modal');
             if (btnOpenGhConfig) {
                 btnOpenGhConfig.addEventListener('click', () => {
                     document.getElementById('gh-owner').value = appState.githubConfig.owner;
