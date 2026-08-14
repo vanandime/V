@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCore Enterprise Workspace - GitHub Sync</title>
+    <title>SmartCore Enterprise Workspace - Instagram Dark UI</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,12 +12,17 @@
             theme: {
                 extend: {
                     colors: {
+                        dark: {
+                            base: '#000000',
+                            surface: '#09090b',
+                            card: '#121214',
+                            border: '#27272a'
+                        },
                         brand: {
                             50: '#eff6ff',
                             500: '#3b82f6',
                             600: '#2563eb',
                             700: '#1d4ed8',
-                            900: '#1e3a8a',
                         }
                     }
                 }
@@ -27,38 +32,37 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-main: #0f172a;
-            --bg-surface: #1e293b;
-            --border-color: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
+            background-color: #000000;
+            color: #f4f4f5;
             overflow-x: hidden;
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--bg-main);
+            background: #000000;
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 3px;
+            background: #27272a;
+            border-radius: 9999px;
         }
 
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .ig-card {
+            background: #121214;
+            border: 1px solid #27272a;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+        }
+
+        .ig-glass {
+            background: rgba(18, 18, 20, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid #27272a;
         }
         
         .transition-smooth {
@@ -69,22 +73,22 @@
 <body class="min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
 
     <!-- Mobile Backdrop Overlay -->
-    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-30 hidden md:hidden transition-smooth"></div>
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 hidden md:hidden transition-smooth"></div>
 
     <!-- App Container -->
     <div id="app" class="flex h-screen overflow-hidden relative">
         
-        <!-- Sidebar Navigation (Drawer Pattern for Mobile) -->
-        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
-            <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+        <!-- Sidebar Navigation (Slide-over Drawer for Mobile) -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 left-0 z-40 w-72 bg-[#09090b] border-r border-[#27272a] flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+            <div class="h-16 flex items-center justify-between px-6 border-b border-[#27272a]">
                 <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/30">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-600/30">
                         SC
                     </div>
-                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">SmartCore</span>
+                    <span class="font-bold text-lg tracking-tight text-white">SmartCore</span>
                 </div>
-                <!-- Close Button for Mobile Drawer -->
-                <button id="sidebar-close" class="md:hidden text-slate-400 hover:text-white p-1">
+                <!-- Close Button for Mobile -->
+                <button id="sidebar-close" class="md:hidden text-zinc-400 hover:text-white p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
@@ -95,12 +99,12 @@
             </nav>
 
             <!-- Sidebar Footer / Status -->
-            <div class="p-4 border-t border-slate-800 space-y-3">
-                <div class="flex items-center justify-between text-xs text-slate-400">
+            <div class="p-4 border-t border-[#27272a] space-y-3 bg-[#000000]/40">
+                <div class="flex items-center justify-between text-xs text-zinc-400">
                     <span>Storage Status</span>
                     <span id="storage-indicator" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-medium">Optimal</span>
                 </div>
-                <div class="flex items-center justify-between text-xs text-slate-400">
+                <div class="flex items-center justify-between text-xs text-zinc-400">
                     <span>GitHub Sync</span>
                     <span id="github-sync-badge" class="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 font-medium flex items-center space-x-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
@@ -111,23 +115,23 @@
         </aside>
 
         <!-- Main Wrapper -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#000000]">
             
-            <!-- Responsive Top Header -->
-            <header class="h-16 bg-slate-900/50 backdrop-blur border-b border-slate-800 flex items-center justify-between px-4 md:px-8 z-10">
-                <div class="flex items-center space-x-2 md:space-x-4 min-w-0">
-                    <button id="sidebar-toggle" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-smooth shrink-0">
+            <!-- Sleek Header -->
+            <header class="h-16 ig-glass flex items-center justify-between px-4 md:px-8 z-10">
+                <div class="flex items-center space-x-3 md:space-x-4 min-w-0">
+                    <button id="sidebar-toggle" class="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-[#27272a]/50 transition-smooth shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
-                    <h1 id="page-title" class="text-sm md:text-lg font-semibold tracking-tight text-white truncate">Dashboard Overview</h1>
+                    <h1 id="page-title" class="text-sm md:text-base font-semibold tracking-tight text-white truncate">Dashboard Overview</h1>
                 </div>
                 
                 <div class="flex items-center space-x-2 md:space-x-4 shrink-0">
-                    <button id="btn-open-github-config" class="inline-flex items-center space-x-1.5 text-[11px] md:text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 md:px-3.5 py-1.5 md:py-2 rounded-xl border border-slate-700 transition-smooth">
-                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-slate-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                        <span id="github-repo-label" class="truncate max-w-[100px] md:max-w-none">GitHub Sync</span>
+                    <button id="btn-open-github-config" class="inline-flex items-center space-x-1.5 text-xs bg-[#121214] hover:bg-[#27272a] text-zinc-200 px-3 py-2 rounded-xl border border-[#27272a] transition-smooth">
+                        <svg class="w-4 h-4 text-zinc-400 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        <span id="github-repo-label" class="truncate max-w-[120px] md:max-w-none">GitHub Sync</span>
                     </button>
-                    <div id="sync-status" class="hidden sm:flex text-xs text-slate-400 items-center space-x-1.5 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/50">
+                    <div id="sync-status" class="hidden sm:flex text-xs text-zinc-400 items-center space-x-1.5 bg-[#121214] px-3 py-2 rounded-xl border border-[#27272a]">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>Synced</span>
                     </div>
@@ -135,31 +139,32 @@
             </header>
 
             <!-- Workspace Content -->
-            <main id="main-workspace" class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-950/40">
+            <main id="main-workspace" class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#000000]">
                 <!-- Dynamic Views Rendered Here -->
             </main>
 
         </div>
     </div>
 
-    <!-- UI Templates & Modals tetap terjaga seperti sebelumnya -->
+    <!-- UI Templates -->
     <template id="nav-item-template">
-        <a href="#" class="nav-item flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition-smooth group">
-            <span class="icon-wrapper text-slate-500 group-hover:text-brand-400 transition-smooth"></span>
+        <a href="#" class="nav-item flex items-center space-x-3 px-3.5 py-3 rounded-xl font-medium text-zinc-400 hover:text-white hover:bg-[#121214] transition-smooth group">
+            <span class="icon-wrapper text-zinc-500 group-hover:text-brand-500 transition-smooth"></span>
             <span class="text-sm"></span>
         </a>
     </template>
 
     <template id="view-dashboard">
-        <div class="space-y-6 animate-fadeIn">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+        <div class="space-y-6 animate-fadeIn max-w-7xl mx-auto">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="ig-card p-6 relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Records</p>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Total Records</p>
                             <h3 id="stat-total-records" class="text-3xl font-bold text-white mt-2">0</h3>
                         </div>
-                        <div class="p-3 bg-brand-500/10 text-brand-400 rounded-xl border border-brand-500/20">
+                        <div class="p-3 bg-brand-500/10 text-brand-500 rounded-2xl border border-brand-500/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                         </div>
                     </div>
@@ -168,28 +173,28 @@
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                <div class="ig-card p-6 relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Sync Status</p>
-                            <h3 id="stat-sync-status" class="text-xl font-bold text-emerald-400 mt-2 truncate">Synchronized</h3>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Sync Status</p>
+                            <h3 id="stat-sync-status" class="text-lg font-bold text-emerald-400 mt-2 truncate">Synchronized</h3>
                         </div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         </div>
                     </div>
-                    <div class="mt-4 flex items-center text-xs text-slate-400 font-medium">
+                    <div class="mt-4 flex items-center text-xs text-zinc-400 font-medium">
                         <span id="stat-last-sync">Terakhir sync: Belum pernah</span>
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden">
+                <div class="ig-card p-6 relative overflow-hidden">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Storage Usage</p>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-zinc-400">Storage Usage</p>
                             <h3 id="stat-storage-size" class="text-3xl font-bold text-white mt-2">0 KB</h3>
                         </div>
-                        <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+                        <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl border border-indigo-500/20">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
                         </div>
                     </div>
@@ -199,12 +204,13 @@
                 </div>
             </div>
 
-            <div class="glass-panel rounded-2xl p-6 space-y-4">
-                <h2 class="text-base font-semibold text-white">GitHub Real-Time Synchronization Center</h2>
-                <p class="text-sm text-slate-400">Setiap mutasi data secara otomatis di-push secara real-time ke Repositori GitHub Anda.</p>
+            <!-- Synchronization Center Panel -->
+            <div class="ig-card p-6 md:p-8 space-y-4">
+                <h2 class="text-lg font-semibold text-white">GitHub Real-Time Synchronization Center</h2>
+                <p class="text-sm text-zinc-400 leading-relaxed">Setiap mutasi data (Tambah, Edit, Hapus) secara otomatis di-push secara real-time ke Repositori GitHub Anda menggunakan Personal Access Token (PAT).</p>
                 <div class="flex items-center space-x-3 pt-2">
-                    <button id="btn-manual-sync" class="inline-flex items-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl text-xs font-medium border border-slate-700 transition-smooth">
-                        <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <button id="btn-manual-sync" class="inline-flex items-center space-x-2 bg-[#18181b] hover:bg-[#27272a] text-white px-5 py-2.5 rounded-xl text-xs font-medium border border-[#27272a] transition-smooth">
+                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         <span>Force Sync Now</span>
                     </button>
                 </div>
@@ -213,25 +219,27 @@
     </template>
 
     <template id="view-management">
-        <div class="space-y-6 animate-fadeIn">
+        <div class="space-y-6 animate-fadeIn max-w-7xl mx-auto">
+            <!-- Action Bar -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="relative flex-1 max-w-md">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </span>
-                    <input type="text" id="search-input" placeholder="Cari data..." class="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-smooth">
+                    <input type="text" id="search-input" placeholder="Cari data berdasarkan nama atau kategori..." class="w-full bg-[#121214] border border-[#27272a] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 transition-smooth">
                 </div>
-                <button id="btn-open-modal" class="inline-flex items-center justify-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-brand-600/25 transition-smooth">
+                <button id="btn-open-modal" class="inline-flex items-center justify-center space-x-2 bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-brand-600/30 transition-smooth">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Tambah Data Baru</span>
                 </button>
             </div>
 
-            <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+            <!-- Data Table Container -->
+            <div class="ig-card overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-800 bg-slate-900/40 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                            <tr class="border-b border-[#27272a] bg-[#18181b]/50 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                                 <th class="py-4 px-6">ID & Waktu</th>
                                 <th class="py-4 px-6">Nama Item</th>
                                 <th class="py-4 px-6">Kategori</th>
@@ -239,32 +247,33 @@
                                 <th class="py-4 px-6 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="data-table-body" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+                        <tbody id="data-table-body" class="divide-y divide-[#27272a] text-sm text-zinc-300"></tbody>
                     </table>
                 </div>
+                <!-- Empty State -->
                 <div id="table-empty-state" class="hidden py-16 text-center">
-                    <p class="text-slate-400 font-medium">Belum ada data tersedia.</p>
+                    <p class="text-zinc-400 font-medium">Belum ada data tersedia.</p>
                 </div>
             </div>
         </div>
     </template>
 
-    <!-- Modals (Item & GitHub Config) -->
-    <div id="app-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden transition-smooth">
-        <div class="glass-panel w-full max-w-lg rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+    <!-- Modals -->
+    <div id="app-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-smooth">
+        <div class="ig-card w-full max-w-lg overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-[#27272a] bg-[#18181b]">
                 <h3 id="modal-title" class="font-semibold text-white text-base">Tambah Item Baru</h3>
-                <button id="btn-close-modal" class="text-slate-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                <button id="btn-close-modal" class="text-zinc-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
             <form id="data-form" class="p-6 space-y-4">
                 <input type="hidden" id="item-id">
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Nama Item</label>
-                    <input type="text" id="item-name" required placeholder="Nama item..." class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Nama Item</label>
+                    <input type="text" id="item-name" required placeholder="Nama item..." class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Kategori</label>
-                    <select id="item-category" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Kategori</label>
+                    <select id="item-category" class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                         <option value="Infrastructure">Infrastructure</option>
                         <option value="Development">Development</option>
                         <option value="Operations">Operations</option>
@@ -272,50 +281,50 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Status</label>
-                    <select id="item-status" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Status</label>
+                    <select id="item-status" class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                         <option value="Active">Active</option>
                         <option value="Pending">Pending</option>
                         <option value="Maintenance">Maintenance</option>
                     </select>
                 </div>
-                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800">
-                    <button type="button" id="btn-cancel-modal" class="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800">Batal</button>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#27272a]">
+                    <button type="button" id="btn-cancel-modal" class="px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-400 hover:bg-[#27272a]">Batal</button>
                     <button type="submit" class="px-5 py-2.5 rounded-xl text-sm font-medium bg-brand-600 hover:bg-brand-500 text-white shadow-lg">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="github-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden transition-smooth">
-        <div class="glass-panel w-full max-w-lg rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
+    <div id="github-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-smooth">
+        <div class="ig-card w-full max-w-lg overflow-hidden shadow-2xl">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-[#27272a] bg-[#18181b]">
                 <h3 class="font-semibold text-white text-base">Konfigurasi GitHub Sync</h3>
-                <button id="btn-close-github-modal" class="text-slate-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                <button id="btn-close-github-modal" class="text-zinc-400 hover:text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
             <form id="github-config-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Owner / Username</label>
-                    <input type="text" id="gh-owner" required class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Owner / Username</label>
+                    <input type="text" id="gh-owner" required class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Repository</label>
-                    <input type="text" id="gh-repo" required class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Repository</label>
+                    <input type="text" id="gh-repo" required class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">File Path</label>
-                    <input type="text" id="gh-path" required value="data/smartcore-state.json" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">File Path</label>
+                    <input type="text" id="gh-path" required value="data/smartcore-state.json" class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Branch</label>
-                    <input type="text" id="gh-branch" required value="main" class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Branch</label>
+                    <input type="text" id="gh-branch" required value="main" class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">Personal Access Token (PAT)</label>
-                    <input type="password" id="gh-token" required class="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                    <label class="block text-xs font-medium text-zinc-400 uppercase tracking-wider mb-2">Personal Access Token (PAT)</label>
+                    <input type="password" id="gh-token" required class="w-full bg-[#000000] border border-[#27272a] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                 </div>
-                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800">
-                    <button type="button" id="btn-cancel-github-modal" class="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800">Batal</button>
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-[#27272a]">
+                    <button type="button" id="btn-cancel-github-modal" class="px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-400 hover:bg-[#27272a]">Batal</button>
                     <button type="submit" class="px-5 py-2.5 rounded-xl text-sm font-medium bg-brand-600 hover:bg-brand-500 text-white shadow-lg">Simpan</button>
                 </div>
             </form>
@@ -412,7 +421,7 @@
                 const contentData = JSON.stringify({
                     items: appState.items,
                     updatedAt: new Date().toISOString(),
-                    version: '1.4'
+                    version: '1.5'
                 }, null, 2);
 
                 const base64Content = btoa(unescape(encodeURIComponent(contentData)));
@@ -457,7 +466,7 @@
                     badge.className = 'px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 font-medium flex items-center space-x-1';
                     badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span><span>${text}</span>`;
                 } else {
-                    badge.className = 'px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 font-medium flex items-center space-x-1';
+                    badge.className = 'px-2 py-0.5 rounded-full bg-zinc-500/10 text-zinc-400 font-medium flex items-center space-x-1';
                     badge.innerHTML = `<span>${text}</span>`;
                 }
             }
@@ -512,8 +521,8 @@
                 labelSpan.textContent = item.label;
 
                 if (appState.currentTab === item.id) {
-                    link.className = 'nav-item flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-white bg-brand-600/20 border border-brand-500/30 transition-smooth group';
-                    iconWrapper.className = 'icon-wrapper text-brand-400';
+                    link.className = 'nav-item flex items-center space-x-3 px-3.5 py-3 rounded-xl font-medium text-white bg-brand-600/20 border border-brand-500/30 transition-smooth group';
+                    iconWrapper.className = 'icon-wrapper text-brand-500';
                 }
 
                 link.addEventListener('click', (e) => {
@@ -578,26 +587,26 @@
 
             filteredItems.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-900/40 transition-smooth';
+                tr.className = 'hover:bg-[#18181b]/50 transition-smooth';
 
                 let statusBadgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
                 if (item.status === 'Pending') statusBadgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
                 if (item.status === 'Maintenance') statusBadgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
 
                 tr.innerHTML = `
-                    <td class="py-4 px-6 font-mono text-xs text-slate-400">
+                    <td class="py-4 px-6 font-mono text-xs text-zinc-400">
                         <span class="text-white font-medium">${item.id}</span>
-                        <div class="text-slate-500 mt-0.5">${item.createdAt}</div>
+                        <div class="text-zinc-500 mt-0.5">${item.createdAt}</div>
                     </td>
                     <td class="py-4 px-6 font-medium text-white">${escapeHtml(item.name)}</td>
-                    <td class="py-4 px-6 text-slate-300">
-                        <span class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700/50 text-xs font-medium text-slate-300">${escapeHtml(item.category)}</span>
+                    <td class="py-4 px-6 text-zinc-300">
+                        <span class="px-2.5 py-1 rounded-lg bg-[#18181b] border border-[#27272a] text-xs font-medium text-zinc-300">${escapeHtml(item.category)}</span>
                     </td>
                     <td class="py-4 px-6">
                         <span class="px-2.5 py-1 rounded-full text-xs font-medium border ${statusBadgeClass}">${item.status}</span>
                     </td>
                     <td class="py-4 px-6 text-right space-x-2">
-                        <button onclick="openEditModal('${item.id}')" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-smooth" title="Edit">
+                        <button onclick="openEditModal('${item.id}')" class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-[#27272a] transition-smooth" title="Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </button>
                         <button onclick="deleteItem('${item.id}')" class="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-smooth" title="Hapus">
@@ -676,7 +685,6 @@
             loadStateFromStorage();
             renderAll();
 
-            // Mobile Drawer Toggle Bindings
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarClose = document.getElementById('sidebar-close');
             const backdrop = document.getElementById('sidebar-backdrop');
@@ -685,7 +693,6 @@
             if (sidebarClose) sidebarClose.addEventListener('click', () => toggleMobileSidebar(false));
             if (backdrop) backdrop.addEventListener('click', () => toggleMobileSidebar(false));
 
-            // Modals & Forms
             document.getElementById('btn-close-modal')?.addEventListener('click', closeModal);
             document.getElementById('btn-cancel-modal')?.addEventListener('click', closeModal);
 
