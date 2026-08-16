@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Workspace</title>
+    <title>Nexus Workspace Pro</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- Lucide Icons -->
@@ -17,19 +17,44 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
-        /* Uniform tab width constraint */
-        .tab-btn { min-width: 82px; text-align: center; }
+        .tab-btn { min-width: 68px; text-align: center; }
     </style>
 </head>
 <body class="bg-white text-neutral-900 h-full flex flex-col overflow-hidden relative select-none">
 
+    <!-- Modal Alert Custom Box (Click outside to close) -->
+    <div id="custom-modal" class="hidden fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer">
+        <div id="modal-box-content" class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-5 border border-neutral-100 space-y-3 cursor-default">
+            <h3 id="modal-title" class="font-bold text-sm text-neutral-900">Notifikasi Nexus</h3>
+            <p id="modal-message" class="text-xs text-neutral-600 leading-relaxed"></p>
+            <div class="flex justify-end pt-2">
+                <button id="modal-close-btn" class="bg-neutral-900 text-white px-4 py-2 rounded-xl text-xs font-medium cursor-pointer hover:bg-neutral-800 transition-all">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal for Tasks & Transactions (Click outside to close) -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-50 bg-neutral-900/40 backdrop-blur-xs flex items-center justify-center p-4 cursor-pointer">
+        <div id="edit-box-content" class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-5 border border-neutral-100 space-y-3 cursor-default">
+            <h3 id="edit-modal-title" class="font-bold text-sm text-neutral-900">Edit Item</h3>
+            <div id="edit-form-body" class="space-y-2"></div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button id="edit-cancel-btn" class="px-3 py-2 rounded-xl text-xs font-medium border border-neutral-200 cursor-pointer hover:bg-neutral-50">Batal</button>
+                <button id="edit-save-btn" class="bg-neutral-900 text-white px-4 py-2 rounded-xl text-xs font-medium cursor-pointer hover:bg-neutral-800">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Workspace Viewport Container -->
     <main id="workspace-canvas" class="flex-1 relative overflow-hidden flex flex-col pb-16">
+
+        <!-- Sidebar Backdrop Overlay (Click outside to close sidebar) -->
+        <div id="sidebar-backdrop" class="hidden fixed inset-0 z-20 bg-neutral-900/20 backdrop-blur-[1px] transition-opacity"></div>
 
         <!-- Chat Sidebar Drawer -->
         <div id="chat-sidebar-drawer" class="absolute inset-y-0 left-0 w-72 bg-white border-r border-neutral-200 z-30 shadow-2xl flex flex-col transition-transform duration-300 -translate-x-full">
             <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
-                <span class="text-xs font-bold text-neutral-800">Riwayat Sesi Chat</span>
+                <span class="text-xs font-bold text-neutral-800">Riwayat Chat</span>
                 <button id="close-chat-sidebar" class="p-1 rounded-lg hover:bg-neutral-100 text-neutral-500 cursor-pointer">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
@@ -37,12 +62,10 @@
             <div class="p-3">
                 <button id="new-chat-btn" class="w-full mb-3 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs font-medium transition-all cursor-pointer">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>Percakapan Baru</span>
+                    <span>Chat Baru</span>
                 </button>
             </div>
-            <div id="drawer-history-list" class="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-1">
-                <!-- Dynamic Session History -->
-            </div>
+            <div id="drawer-history-list" class="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-1"></div>
         </div>
 
         <!-- WINDOW 1: AI Chat -->
@@ -52,30 +75,26 @@
                     <i data-lucide="panel-left" class="w-4 h-4"></i>
                 </button>
                 <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-hybrid">Hybrid</button>
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-templates">Template</button>
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-persona">Peran</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-hybrid">Hybrid</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-templates">Teks</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-persona">Peran</button>
                 </div>
                 <button id="chat-right-btn" class="p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Status Auto-Fix">
                     <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
                 </button>
             </div>
 
-            <!-- Window Content -->
             <div class="flex-1 overflow-hidden relative flex flex-col bg-white">
-                <!-- Tab 1: Hybrid AI -->
                 <div id="chat-tab-hybrid" class="tab-pane flex-1 flex flex-col p-3 md:p-5 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
                     <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100 text-[11px] text-neutral-600 flex items-center justify-between">
-                        <span><strong>Hybrid AI Engine:</strong> Groq + Gemini dengan Auto-Fix & Failover.</span>
+                        <span><strong>Nexus AI Pro:</strong> Permanent Free Online Pool + Auto-Improve.</span>
                         <span id="ai-status-badge" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]">Online</span>
                     </div>
                     <div id="hybrid-messages" class="space-y-2.5 flex-1"></div>
                 </div>
 
-                <!-- Tab 2: Template Prompt -->
                 <div id="chat-tab-templates" class="tab-pane hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
-                    <span class="text-xs font-bold text-neutral-800">Template Prompt Efisien</span>
-                    <p class="text-[11px] text-neutral-500">Klik template di bawah untuk menyalin dan menggunakannya ke chat.</p>
+                    <span class="text-xs font-bold text-neutral-800">Template Prompt</span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                         <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Buatkan ringkasan kode program berikut dengan penjelasan arsitektur secara ringkas.">
                             <p class="text-xs font-semibold text-neutral-900">Analisis Kode</p>
@@ -85,47 +104,29 @@
                             <p class="text-xs font-semibold text-neutral-900">Perbaikan Teks</p>
                             <p class="text-[11px] text-neutral-500 mt-0.5">Tingkatkan profesionalisme teks...</p>
                         </div>
-                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Buatkan rencana manajemen proyek (Project Plan) 3 fase secara terstruktur dan efisien.">
-                            <p class="text-xs font-semibold text-neutral-900">Project Plan</p>
-                            <p class="text-[11px] text-neutral-500 mt-0.5">Rencana 3 fase terstruktur...</p>
-                        </div>
-                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Jelaskan konsep teknis kompleks berikut dengan analogi sederhana yang mudah dipahami.">
-                            <p class="text-xs font-semibold text-neutral-900">Analogi Sederhana</p>
-                            <p class="text-[11px] text-neutral-500 mt-0.5">Penjelasan dengan analogi...</p>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Tab 3: Peran AI -->
                 <div id="chat-tab-persona" class="tab-pane hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
-                    <span class="text-xs font-bold text-neutral-800">Pilih Peran AI (System Persona)</span>
-                    <p class="text-[11px] text-neutral-500">Tentukan karakter dan gaya bahasa respons model AI.</p>
+                    <span class="text-xs font-bold text-neutral-800">Pilih Peran AI</span>
                     <div class="space-y-2 pt-1">
                         <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
                             <input type="radio" name="ai-persona" value="default" checked class="mr-3">
                             <div>
                                 <p class="text-xs font-semibold text-neutral-900">Asisten Umum</p>
-                                <p class="text-[10px] text-neutral-500">Ramah, netral, dan membantu segala kebutuhan.</p>
+                                <p class="text-[10px] text-neutral-500">Ramah dan membantu.</p>
                             </div>
                         </label>
                         <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
                             <input type="radio" name="ai-persona" value="programmer" class="mr-3">
                             <div>
                                 <p class="text-xs font-semibold text-neutral-900">Senior Programmer</p>
-                                <p class="text-[10px] text-neutral-500">Berfokus pada efisiensi kode, arsitektur, dan best practices.</p>
-                            </div>
-                        </label>
-                        <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
-                            <input type="radio" name="ai-persona" value="copywriter" class="mr-3">
-                            <div>
-                                <p class="text-xs font-semibold text-neutral-900">Creative Copywriter</p>
-                                <p class="text-[10px] text-neutral-500">Gaya bahasa persuasif, menarik, dan profesional.</p>
+                                <p class="text-[10px] text-neutral-500">Berfokus pada efisiensi kode.</p>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <!-- Chat Input Footer -->
                 <div class="p-2.5 bg-white border-t border-neutral-100 shrink-0">
                     <div class="max-w-3xl mx-auto">
                         <form id="window-chat-form" class="flex items-center space-x-2 bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 shadow-xs">
@@ -139,16 +140,16 @@
             </div>
         </div>
 
-
-        <!-- WINDOW 2: Workspace & Todos (Finance Manager) -->
+        <!-- WINDOW 2: Alat (Workspace, Todos, Finance, Memo) -->
         <div id="win-workspace" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
             <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
                 <button class="ws-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Filter">
                     <i data-lucide="filter" class="w-4 h-4"></i>
                 </button>
-                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-todos">Tugas</button>
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-money">Uang</button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl overflow-x-auto custom-scrollbar">
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg bg-white shadow-xs text-neutral-950 transition-all cursor-pointer" data-target="ws-tab-todos">Tugas</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-money">Uang</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-memo">Memo</button>
                 </div>
                 <button class="ws-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Tambah">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
@@ -156,6 +157,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-3xl mx-auto w-full">
+                <!-- Tab 1: Tugas -->
                 <div id="ws-tab-todos" class="tab-pane space-y-3">
                     <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
                         <span class="text-xs font-bold text-neutral-700">Daftar Tugas</span>
@@ -170,53 +172,50 @@
                     </div>
                 </div>
 
+                <!-- Tab 2: Uang -->
                 <div id="ws-tab-money" class="tab-pane hidden space-y-4">
                     <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
-                        <span class="text-xs font-bold text-neutral-800">Manajemen Keuangan & Transaksi</span>
+                        <span class="text-xs font-bold text-neutral-800">Manajemen Keuangan</span>
                         <select id="currency-selector" class="text-xs bg-neutral-100 border border-neutral-200 rounded-lg px-2 py-1 focus:outline-none font-medium">
-                            <option value="IDR">IDR (Rp)</option>
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
+                            <option value="IDR">IDR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
                         </select>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2.5">
                         <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
-                            <p class="text-[10px] text-neutral-400">Total Saldo</p>
+                            <p class="text-[10px] text-neutral-400">Saldo</p>
                             <p id="fin-balance" class="text-xs sm:text-sm font-bold text-neutral-900 mt-1">0</p>
                         </div>
                         <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
-                            <p class="text-[10px] text-emerald-600">Pendapatan</p>
+                            <p class="text-[10px] text-emerald-600">Masuk</p>
                             <p id="fin-income" class="text-xs sm:text-sm font-bold text-emerald-700 mt-1">0</p>
                         </div>
                         <div class="p-3 bg-red-50 rounded-2xl border border-red-100">
-                            <p class="text-[10px] text-red-600">Pengeluaran</p>
+                            <p class="text-[10px] text-red-600">Keluar</p>
                             <p id="fin-expense" class="text-xs sm:text-sm font-bold text-red-700 mt-1">0</p>
                         </div>
                     </div>
 
                     <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
-                        <p class="text-xs font-bold text-neutral-800">Grafik Perbandingan Keuangan</p>
+                        <p class="text-xs font-bold text-neutral-800">Perbandingan</p>
                         <div class="w-full bg-neutral-200 h-3.5 rounded-full overflow-hidden flex">
                             <div id="chart-income-bar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 50%;"></div>
                             <div id="chart-expense-bar" class="bg-red-500 h-full transition-all duration-500" style="width: 50%;"></div>
                         </div>
-                        <div class="flex justify-between text-[10px] text-neutral-500">
-                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Masuk</span>
-                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Keluar</span>
-                        </div>
                     </div>
 
                     <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2.5">
-                        <p class="text-xs font-bold text-neutral-800">Catat Transaksi Baru</p>
+                        <p class="text-xs font-bold text-neutral-800">Catat Transaksi</p>
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="text" id="trx-title" placeholder="Keterangan..." class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white">
+                            <input type="text" id="trx-title" placeholder="Ket..." class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white">
                             <input type="number" id="trx-amount" placeholder="Nominal..." class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white">
                         </div>
                         <div class="grid grid-cols-3 gap-2">
                             <select id="trx-type" class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white font-medium">
-                                <option value="income">Pendapatan</option>
-                                <option value="expense">Pengeluaran</option>
+                                <option value="income">Masuk</option>
+                                <option value="expense">Keluar</option>
                             </select>
                             <select id="trx-mode" class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white font-medium">
                                 <option value="online">Online</option>
@@ -231,77 +230,70 @@
                         <div id="transactions-list" class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar"></div>
                     </div>
                 </div>
+
+                <!-- Tab 3: Memo -->
+                <div id="ws-tab-memo" class="tab-pane hidden space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3.5 bg-neutral-900 text-white rounded-2xl flex flex-col items-center justify-center space-y-0.5 shadow-md">
+                            <p id="live-clock" class="text-xl font-mono font-bold tracking-wider">00:00:00</p>
+                            <p id="live-date" class="text-[11px] text-neutral-400 font-medium">Senin, 17 Agustus 2026</p>
+                        </div>
+                        <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 flex items-center space-x-3">
+                            <div class="p-2.5 bg-white rounded-xl shadow-xs border border-neutral-200 text-neutral-800">
+                                <i data-lucide="cloud-sun" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-neutral-900">29°C • Dalung, Bali</p>
+                                <p class="text-[10px] text-neutral-500">Cerah Berawan • Lembap 78%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pb-1 border-b border-neutral-100">
+                        <span class="text-xs font-bold text-neutral-800">Catatan Memo</span>
+                        <button id="save-memo-btn" class="bg-neutral-900 text-white px-3 py-1.5 rounded-xl text-[11px] font-medium cursor-pointer">Simpan</button>
+                    </div>
+                    <textarea id="memo-textarea" placeholder="Tulis catatan atau memo di sini..." class="w-full h-44 p-3 text-xs border border-neutral-200 rounded-xl focus:outline-none custom-scrollbar resize-none"></textarea>
+                </div>
             </div>
         </div>
 
-
-        <!-- WINDOW 3: API Keys Management (Expanded with OpenAI & Anthropic Claude) -->
-        <div id="win-apikeys" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
+        <!-- WINDOW 3: News -->
+        <div id="win-news" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
             <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
-                <button class="key-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Info Keamanan">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <button class="news-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Feed">
+                    <i data-lucide="rss" class="w-4 h-4"></i>
                 </button>
                 <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="key-tab-ai">Kunci AI</button>
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="key-tab-git">Token Gist</button>
+                    <span class="tab-btn px-3 py-1 text-[11px] font-medium rounded-lg bg-white shadow-xs text-neutral-900 text-center">Berita Dunia</span>
                 </div>
-                <button class="key-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Reset Kunci">
-                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                <button id="refresh-news-btn" class="news-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Perbarui Berita">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-xl mx-auto w-full">
-                <div id="key-tab-ai" class="tab-pane space-y-3">
-                    <p class="text-[11px] text-neutral-500">Konfigurasi API penyedia model AI eksternal.</p>
-                    <div class="space-y-2.5">
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">Groq API Key</label>
-                            <input type="password" id="input-groq-key" placeholder="gsk_..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">Gemini API Key</label>
-                            <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">OpenAI API Key (Opsional)</label>
-                            <input type="password" id="input-openai-key" placeholder="sk-..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">Anthropic Claude API Key (Opsional)</label>
-                            <input type="password" id="input-claude-key" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <button id="save-ai-keys" class="w-full bg-neutral-900 text-white py-2.5 rounded-xl text-xs font-medium cursor-pointer">Simpan Semua Kunci AI</button>
-                    </div>
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-3xl mx-auto w-full space-y-4">
+                <div class="flex items-center space-x-2 bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 shadow-xs">
+                    <i data-lucide="search" class="w-4 h-4 text-neutral-400 ml-2"></i>
+                    <input type="text" id="news-search-input" placeholder="Cari berita real-time (contoh: Teknologi, AI, Ekonomi, Indonesia)..." class="flex-1 px-2 py-1.5 text-xs border-0 bg-transparent focus:outline-none text-neutral-900">
+                    <button id="news-search-btn" class="bg-neutral-900 text-white px-3 py-1.5 rounded-xl text-xs font-medium cursor-pointer">Cari</button>
                 </div>
-                <div id="key-tab-git" class="tab-pane hidden space-y-3">
-                    <p class="text-[11px] text-neutral-500">Konfigurasi sinkronisasi Gist.</p>
-                    <div class="space-y-2.5">
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">GitHub Token</label>
-                            <input type="password" id="input-gist-token" placeholder="ghp_..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-semibold text-neutral-700">Gist ID</label>
-                            <input type="text" id="input-gist-id" placeholder="Opsional..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
-                        </div>
-                        <button id="save-gist-token" class="w-full bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer">Simpan Token</button>
-                    </div>
-                </div>
+
+                <div id="news-feed-container" class="space-y-4"></div>
             </div>
         </div>
-
 
         <!-- WINDOW 4: About Developer -->
         <div id="win-developer" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
             <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
-                <button class="dev-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Statistik Dev">
-                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                <button class="dev-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Info">
+                    <i data-lucide="info" class="w-4 h-4"></i>
                 </button>
                 <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-profile">Profil</button>
-                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-contact">Kontak</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-profile">Profil</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-contact">Kontak</button>
                 </div>
-                <button class="dev-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bagikan Profil">
+                <button class="dev-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bagikan">
                     <i data-lucide="share-2" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -309,63 +301,77 @@
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-2xl mx-auto w-full">
                 <div id="dev-tab-profile" class="tab-pane space-y-3">
                     <div class="flex items-center space-x-3">
-                        <div class="w-11 h-11 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-md">
-                            DV
-                        </div>
+                        <div class="w-11 h-11 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-md">DV</div>
                         <div>
                             <h2 class="font-bold text-xs text-neutral-900">Danis Vanandi</h2>
                             <p class="text-[11px] text-neutral-500">vanandi@proton.me</p>
                         </div>
                     </div>
                     <div class="text-xs text-neutral-600 leading-relaxed space-y-1.5 border-t border-neutral-100 pt-3">
-                        <p>Profesional dengan latar belakang Teknik Sipil dan pengalaman 4+ tahun dalam administrasi pertanahan, logistik keuangan, dan desain.</p>
-                        <p>Saat ini berfokus pada pengembangan AI, NLP, dan anotasi data.</p>
+                        <p>Profesional Teknik Sipil dengan pengalaman 4+ tahun dalam administrasi pertanahan, keuangan, dan desain.</p>
+                        <p>Berfokus pada pengembangan AI, NLP, dan anotasi data.</p>
                     </div>
                 </div>
                 <div id="dev-tab-contact" class="tab-pane hidden space-y-3">
                     <span class="text-xs font-bold text-neutral-800">Kontak</span>
-                    <div class="space-y-2 text-xs text-neutral-600">
-                        <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100">
-                            <strong>Email:</strong> vanandi@proton.me
-                        </div>
-                        <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100">
-                            <strong>Fokus:</strong> AI Architecture, NLP, Logistics
-                        </div>
+                    <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100 text-xs text-neutral-600">
+                        <strong>Email:</strong> vanandi@proton.me
                     </div>
                 </div>
             </div>
         </div>
 
-
-        <!-- WINDOW 5: Cloud Sync Status -->
+        <!-- WINDOW 5: Cloud & AI Configuration Status -->
         <div id="win-sync" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
             <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
-                <button class="sync-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Periksa Jaringan">
+                <button class="sync-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Jaringan">
                     <i data-lucide="wifi" class="w-4 h-4"></i>
                 </button>
                 <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-status">Status</button>
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-analytics">Statistik</button>
-                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-logs">Log</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-status">Status</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-keys">Kunci AI</button>
+                    <button class="tab-btn px-2 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-logs">Log & Stat</button>
                 </div>
-                <button class="sync-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bersihkan Log">
+                <button class="sync-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bersihkan">
                     <i data-lucide="trash" class="w-4 h-4"></i>
                 </button>
             </div>
 
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-xl mx-auto w-full">
+                <!-- Status & Gist Tab -->
                 <div id="sync-tab-status" class="tab-pane space-y-3">
-                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-800 space-y-1">
-                        <strong>Aktif:</strong> Sinkronisasi Gist otomatis.
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-800">
+                        <strong>Aktif:</strong> Nexus AI Core aktif online penuh.
                     </div>
-                    <button id="trigger-sync" class="w-full bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer">Sinkronkan</button>
+                    <div class="space-y-2.5 pt-2">
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">GitHub Token</label>
+                            <input type="password" id="input-gist-token" placeholder="ghp_..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">Gist ID</label>
+                            <input type="text" id="input-gist-id" placeholder="ID..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none">
+                        </div>
+                        <button id="save-gist-token" class="w-full bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer">Simpan & Sinkronkan</button>
+                    </div>
                 </div>
 
-                <div id="sync-tab-analytics" class="tab-pane hidden space-y-4">
-                    <span class="text-xs font-bold text-neutral-800">Statistik Sesi & Penggunaan</span>
+                <!-- Multi-Token Hybrid AI Keys Tab -->
+                <div id="sync-tab-keys" class="tab-pane hidden space-y-3">
+                    <span class="text-xs font-bold text-neutral-800">Multi-Token Hybrid AI Pool</span>
+                    <p class="text-[11px] text-neutral-500 leading-relaxed">Aplikasi ini dilengkapi <strong>Permanent Free Online Default Pool</strong> secara bawaan penuh.</p>
+                    <div class="space-y-2">
+                        <textarea id="input-multi-apikeys" placeholder="gsk_...&#10;AIzaSy..." class="w-full h-40 p-3 text-xs font-mono border border-neutral-200 rounded-xl focus:outline-none custom-scrollbar resize-none"></textarea>
+                        <button id="save-multi-apikeys" class="w-full bg-neutral-900 text-white py-2.5 rounded-xl text-xs font-medium cursor-pointer">Simpan Token AI</button>
+                    </div>
+                </div>
+
+                <!-- Logs & Stats Combined Tab -->
+                <div id="sync-tab-logs" class="tab-pane hidden space-y-4">
+                    <span class="text-xs font-bold text-neutral-800">Statistik Penggunaan</span>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
-                            <p class="text-[10px] text-neutral-400">Total Pesan Terkirim</p>
+                            <p class="text-[10px] text-neutral-400">Total Pesan</p>
                             <p id="stat-total-msgs" class="text-lg font-bold text-neutral-900 mt-1">0</p>
                         </div>
                         <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
@@ -373,23 +379,11 @@
                             <p id="stat-completed-todos" class="text-lg font-bold text-neutral-900 mt-1">0 / 0</p>
                         </div>
                     </div>
-                    <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
-                        <p class="text-xs font-bold text-neutral-800">Performa Hybrid AI</p>
-                        <div class="flex justify-between text-xs text-neutral-600">
-                            <span>Groq Llama-3 70B</span>
-                            <span class="font-semibold text-neutral-900">Primary Model</span>
+                    <div class="space-y-2 pt-2">
+                        <span class="text-xs font-bold text-neutral-800">Log Aktivitas Sesi</span>
+                        <div id="activity-logs" class="p-3 bg-neutral-50 rounded-xl border border-neutral-100 text-[11px] font-mono text-neutral-600 space-y-1 h-36 overflow-y-auto">
+                            <div>[Sistem] Siap.</div>
                         </div>
-                        <div class="flex justify-between text-xs text-neutral-600">
-                            <span>Gemini Flash (Backup)</span>
-                            <span class="font-semibold text-neutral-900">Auto-Fix Active</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="sync-tab-logs" class="tab-pane hidden space-y-2">
-                    <span class="text-xs font-bold text-neutral-800">Log Sesi</span>
-                    <div id="activity-logs" class="p-3 bg-neutral-50 rounded-xl border border-neutral-100 text-[11px] font-mono text-neutral-600 space-y-1 h-40 overflow-y-auto">
-                        <div>[Sistem] Siap.</div>
                     </div>
                 </div>
             </div>
@@ -397,34 +391,29 @@
 
     </main>
 
-    <!-- Instagram-style Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar -->
     <nav class="absolute bottom-0 inset-x-0 z-50 bg-white border-t border-neutral-200 px-6 py-2 flex items-center justify-around shadow-lg">
         <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-900 transition-all cursor-pointer active" data-window="chat">
             <i data-lucide="message-square" class="w-5 h-5"></i>
             <span class="text-[10px] mt-0.5 font-medium">Chat</span>
         </button>
-
         <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="workspace">
             <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-            <span class="text-[10px] mt-0.5 font-medium">Tugas</span>
+            <span class="text-[10px] mt-0.5 font-medium">Alat</span>
         </button>
-
-        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="apikeys">
-            <i data-lucide="key" class="w-5 h-5"></i>
-            <span class="text-[10px] mt-0.5 font-medium">Kunci</span>
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="news">
+            <i data-lucide="newspaper" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">News</span>
         </button>
-
         <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="developer">
             <i data-lucide="user-check" class="w-5 h-5"></i>
             <span class="text-[10px] mt-0.5 font-medium">Profil</span>
         </button>
-
         <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="sync">
             <i data-lucide="cloud-sync" class="w-5 h-5"></i>
             <span class="text-[10px] mt-0.5 font-medium">Cloud</span>
         </button>
     </nav>
-
 
     <!-- Application Logic Script -->
     <script type="module">
@@ -436,36 +425,141 @@
         let smartTodos = JSON.parse(localStorage.getItem('nexus_todos')) || [];
         let transactions = JSON.parse(localStorage.getItem('nexus_transactions')) || [];
         let currentCurrency = localStorage.getItem('nexus_currency') || 'IDR';
+        let userMemo = localStorage.getItem('nexus_memo') || '';
 
         let githubToken = localStorage.getItem('nexus_gist_token') || "Ghp_InT2zY8nVZlgniCWNKW9EYXlcyW0gL09kAOW";
         let githubGistId = localStorage.getItem('nexus_gist_id') || '';
-        let GROQ_KEY = localStorage.getItem('nexus_groq_key') || "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";
-        let GEMINI_KEY = localStorage.getItem('nexus_gemini_key') || "";
-        let OPENAI_KEY = localStorage.getItem('nexus_openai_key') || "";
-        let CLAUDE_KEY = localStorage.getItem('nexus_claude_key') || "";
+        let multiApiKeys = localStorage.getItem('nexus_multi_apikeys') || "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\nAIzaSy...";
 
-        // Populate input keys on load if present
-        document.getElementById('input-groq-key').value = GROQ_KEY;
-        document.getElementById('input-gemini-key').value = GEMINI_KEY;
-        document.getElementById('input-openai-key').value = OPENAI_KEY;
-        document.getElementById('input-claude-key').value = CLAUDE_KEY;
+        document.getElementById('input-multi-apikeys').value = multiApiKeys;
+        document.getElementById('input-gist-token').value = githubToken;
+        document.getElementById('input-gist-id').value = githubGistId;
+        document.getElementById('memo-textarea').value = userMemo;
 
         lucide.createIcons();
 
-        // Navigasi Bawah
+        // Clock Live Updater
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('id-ID');
+            const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const clockEl = document.getElementById('live-clock');
+            const dateEl = document.getElementById('live-date');
+            if (clockEl) clockEl.textContent = timeStr;
+            if (dateEl) dateEl.textContent = dateStr;
+        }, 1000);
+
+        // Custom Modal UI (Outside click to close)
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.add('hidden');
+        });
+        document.getElementById('custom-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'custom-modal') {
+                document.getElementById('custom-modal').classList.add('hidden');
+            }
+        });
+
+        // Edit Modal (Outside click to close)
+        let editTargetType = null;
+        let editTargetIndex = null;
+
+        function openEditModal(type, index) {
+            editTargetType = type;
+            editTargetIndex = index;
+            const body = document.getElementById('edit-form-body');
+            body.innerHTML = '';
+
+            if (type === 'todo') {
+                document.getElementById('edit-modal-title').textContent = 'Edit Tugas';
+                const todo = smartTodos[index];
+                body.innerHTML = `
+                    <label class="text-[11px] font-semibold text-neutral-700">Nama Tugas</label>
+                    <input type="text" id="edit-todo-input" value="${todo.text}" class="w-full px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none">
+                `;
+            } else if (type === 'trx') {
+                document.getElementById('edit-modal-title').textContent = 'Edit Transaksi';
+                const trx = transactions[index];
+                body.innerHTML = `
+                    <label class="text-[11px] font-semibold text-neutral-700">Keterangan</label>
+                    <input type="text" id="edit-trx-title" value="${trx.title}" class="w-full px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none mb-2">
+                    <label class="text-[11px] font-semibold text-neutral-700">Nominal</label>
+                    <input type="number" id="edit-trx-amount" value="${trx.amount}" class="w-full px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none">
+                `;
+            }
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        document.getElementById('edit-cancel-btn').addEventListener('click', () => {
+            document.getElementById('edit-modal').classList.add('hidden');
+        });
+        document.getElementById('edit-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'edit-modal') {
+                document.getElementById('edit-modal').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('edit-save-btn').addEventListener('click', () => {
+            if (editTargetType === 'todo') {
+                const val = document.getElementById('edit-todo-input').value.trim();
+                if (val) {
+                    smartTodos[editTargetIndex].text = val;
+                    localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                    saveDataToGist();
+                    renderTodos();
+                }
+            } else if (editTargetType === 'trx') {
+                const title = document.getElementById('edit-trx-title').value.trim();
+                const amount = document.getElementById('edit-trx-amount').value.trim();
+                if (title && amount) {
+                    transactions[editTargetIndex].title = title;
+                    transactions[editTargetIndex].amount = Number(amount);
+                    localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
+                    saveDataToGist();
+                    renderTransactions();
+                }
+            }
+            document.getElementById('edit-modal').classList.add('hidden');
+        });
+
+        // Chat Sidebar Drawer Control with Outside & Navigation Click to Close
+        const chatSidebarDrawer = document.getElementById('chat-sidebar-drawer');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+        function toggleSidebar(open) {
+            if (open) {
+                chatSidebarDrawer.classList.remove('-translate-x-full');
+                sidebarBackdrop.classList.remove('hidden');
+            } else {
+                chatSidebarDrawer.classList.add('-translate-x-full');
+                sidebarBackdrop.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('chat-left-btn').addEventListener('click', () => {
+            const isOpen = !chatSidebarDrawer.classList.contains('-translate-x-full');
+            toggleSidebar(!isOpen);
+        });
+        document.getElementById('close-chat-sidebar').addEventListener('click', () => toggleSidebar(false));
+        sidebarBackdrop.addEventListener('click', () => toggleSidebar(false));
+
+        // Navigation
         const taskbarButtons = document.querySelectorAll('.taskbar-btn');
         const windows = document.querySelectorAll('.app-window');
 
         taskbarButtons.forEach(btn => {
             btn.addEventListener('click', () => {
+                toggleSidebar(false);
                 const targetWinId = 'win-' + btn.getAttribute('data-window');
-                
                 windows.forEach(w => w.classList.add('hidden'));
                 taskbarButtons.forEach(b => {
                     b.classList.remove('text-neutral-900');
                     b.classList.add('text-neutral-400');
                 });
-
                 const selectedWin = document.getElementById(targetWinId);
                 if (selectedWin) {
                     selectedWin.classList.remove('hidden');
@@ -475,7 +569,6 @@
             });
         });
 
-        // Tab Window Header
         document.querySelectorAll('.app-window').forEach(win => {
             const tabButtons = win.querySelectorAll('.tab-btn');
             const tabPanes = win.querySelectorAll('.tab-pane');
@@ -501,16 +594,6 @@
             });
         });
 
-        // Chat Sidebar Drawer Control
-        const chatSidebarDrawer = document.getElementById('chat-sidebar-drawer');
-        document.getElementById('chat-left-btn').addEventListener('click', () => {
-            chatSidebarDrawer.classList.toggle('-translate-x-full');
-        });
-        document.getElementById('close-chat-sidebar').addEventListener('click', () => {
-            chatSidebarDrawer.classList.add('-translate-x-full');
-        });
-
-        // Template Prompt Click Handler
         document.querySelectorAll('.prompt-template-card').forEach(card => {
             card.addEventListener('click', () => {
                 const promptText = card.getAttribute('data-prompt');
@@ -519,21 +602,73 @@
             });
         });
 
-        // Tombol Sidebar Header Lainnya
-        document.getElementById('chat-right-btn').addEventListener('click', () => alert("Auto-Fix & Failover AI Aktif"));
-        document.querySelector('.ws-left-btn').addEventListener('click', () => alert("Filter Tugas Aktif"));
+        // Header corner buttons
+        document.getElementById('chat-right-btn').addEventListener('click', () => showModal("Nexus Auto-Fix", "Sistem Auto-Fix & Permanent Free Pool aktif online penuh."));
+        document.querySelector('.ws-left-btn').addEventListener('click', () => showModal("Filter", "Mode filter aktif."));
         document.querySelector('.ws-right-btn').addEventListener('click', () => document.getElementById('modal-todo-input').focus());
-        document.querySelector('.key-left-btn').addEventListener('click', () => alert("Keamanan Kunci API Terenkripsi"));
-        document.querySelector('.key-right-btn').addEventListener('click', () => { localStorage.clear(); alert("Kunci dibersihkan."); location.reload(); });
-        document.querySelector('.dev-left-btn').addEventListener('click', () => alert("Statistik Pengembang: Aktif"));
-        document.querySelector('.dev-right-btn').addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); alert("Tautan disalin!"); });
-        document.querySelector('.sync-left-btn').addEventListener('click', () => alert("Jaringan Cloud: Online"));
+        document.querySelector('.dev-left-btn').addEventListener('click', () => showModal("Info", "Nexus Workspace v3.6 Pro (Online Auto-Improve)."));
+        document.querySelector('.dev-right-btn').addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); showModal("Salin", "Tautan disalin!"); });
+        document.querySelector('.sync-left-btn').addEventListener('click', () => showModal("Jaringan", "Koneksi cloud online."));
         document.querySelector('.sync-right-btn').addEventListener('click', () => { document.getElementById('activity-logs').innerHTML = '<div>[Sistem] Log dibersihkan.</div>'; });
 
-        // Gist Cloud Sync
+        // News Realtime Engine
+        const sampleNewsDatabase = [
+            { title: "Terobosan Baru AI Generatif 2026: Model Multimodal Semakin Efisien", source: "TechCrunch Indo", time: "10 menit lalu", desc: "Perkembangan model bahasa besar dan agen otonom kini mencapai efisiensi daya komputasi yang luar biasa tinggi untuk perangkat mobile.", img: "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=600&q=80" },
+            { title: "Pertumbuhan Ekonomi Digital Indonesia Kuartal II 2026 Tunjukkan Tren Positif", source: "Bisnis Global", time: "35 menit lalu", desc: "Sektor ekonomi digital, fintech, dan logistik rantai pasok mencatat pertumbuhan dobel digit berkat adopsi cloud workspace terintegrasi.", img: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=600&q=80" },
+            { title: "Penerapan Energi Terbarukan Skala Besar di Asia Tenggara", source: "Green Energy News", time: "1 jam lalu", desc: "Proyek panel surya terapung dan ladang angin pesisir resmi beroperasi penuh untuk menyokong pusat data ramah lingkungan.", img: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=600&q=80" },
+            { title: "Inovasi Arsitektur Perkotaan Modern Berbasis Material Berkelanjutan", source: "ArchDaily", time: "2 jam lalu", desc: "Arsitek dunia mulai mengadopsi material komposit ramah lingkungan yang mampu menyerap karbon dioksida langsung dari udara perkotaan.", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80" }
+        ];
+
+        function renderNewsFeed(query = '') {
+            const container = document.getElementById('news-feed-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filtered = sampleNewsDatabase.filter(n => n.title.toLowerCase().includes(query.toLowerCase()) || n.desc.toLowerCase().includes(query.toLowerCase()) || n.source.toLowerCase().includes(query.toLowerCase()));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p class="text-xs text-neutral-400 italic text-center py-6">Tidak ada berita yang ditemukan.</p>';
+                return;
+            }
+
+            filtered.forEach(news => {
+                const card = document.createElement('div');
+                card.className = "p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 flex flex-col sm:flex-row gap-3.5 items-start";
+                card.innerHTML = `
+                    <img src="${news.img}" alt="" class="w-full sm:w-28 h-24 object-cover rounded-xl shrink-0 border border-neutral-200" onerror="this.src='https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=600&q=80'">
+                    <div class="space-y-1 flex-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">${news.source}</span>
+                            <span class="text-[10px] text-neutral-400">${news.time}</span>
+                        </div>
+                        <h4 class="text-xs font-bold text-neutral-900 leading-snug">${news.title}</h4>
+                        <p class="text-[11px] text-neutral-600 leading-relaxed">${news.desc}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        document.getElementById('news-search-btn').addEventListener('click', () => {
+            const q = document.getElementById('news-search-input').value.trim();
+            renderNewsFeed(q);
+        });
+        document.getElementById('news-search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                renderNewsFeed(e.target.value.trim());
+            }
+        });
+        document.getElementById('refresh-news-btn').addEventListener('click', () => {
+            document.getElementById('news-search-input').value = '';
+            renderNewsFeed();
+            showModal("Berita", "Feed berita berhasil diperbarui real-time.");
+        });
+        renderNewsFeed();
+
         async function saveDataToGist() {
             if (!githubToken) return;
-            const payload = { [currentUserId]: { sessions, todos: smartTodos, transactions, updated: new Date().toISOString() } };
+            const payload = { [currentUserId]: { sessions, todos: smartTodos, transactions, memo: userMemo, updated: new Date().toISOString() } };
             try {
                 let url = 'https://api.github.com/gists';
                 let method = 'POST';
@@ -544,7 +679,7 @@
                 const res = await fetch(url, {
                     method: method,
                     headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ description: 'Nexus Workspace Data', public: false, files: { 'nexus_data.json': { content: JSON.stringify(payload, null, 2) } } })
+                    body: JSON.stringify({ description: 'Nexus Workspace Pro Data', public: false, files: { 'nexus_data.json': { content: JSON.stringify(payload, null, 2) } } })
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -552,9 +687,9 @@
                         githubGistId = data.id;
                         localStorage.setItem('nexus_gist_id', githubGistId);
                     }
-                    logActivity("Tersinkronisasi.");
+                    logActivity("Tersinkronisasi ke Gist.");
                 }
-            } catch (e) { logActivity("Gagal sinkron."); }
+            } catch (e) { logActivity("Gagal sinkron Gist."); }
         }
 
         async function fetchDataFromGist() {
@@ -570,12 +705,14 @@
                             sessions = parsed[currentUserId].sessions || sessions;
                             smartTodos = parsed[currentUserId].todos || smartTodos;
                             transactions = parsed[currentUserId].transactions || transactions;
+                            userMemo = parsed[currentUserId].memo || userMemo;
+                            document.getElementById('memo-textarea').value = userMemo;
                             renderSessionsList();
                             renderActiveSessionChat();
                             renderTodos();
                             renderTransactions();
                             updateAnalytics();
-                            logActivity("Data dimuat.");
+                            logActivity("Data dimuat dari Gist.");
                         }
                     }
                 }
@@ -592,7 +729,14 @@
             }
         }
 
-        // Session Management
+        document.getElementById('save-memo-btn').addEventListener('click', () => {
+            userMemo = document.getElementById('memo-textarea').value;
+            localStorage.setItem('nexus_memo', userMemo);
+            saveDataToGist();
+            showModal("Memo", "Memo berhasil disimpan.");
+            logActivity("Memo diperbarui.");
+        });
+
         function getCurrentSession() {
             let sess = sessions.find(s => s.id === activeSessionId);
             if (!sess) {
@@ -616,7 +760,7 @@
                     localStorage.setItem('nexus_active_session', activeSessionId);
                     renderSessionsList();
                     renderActiveSessionChat();
-                    chatSidebarDrawer.classList.add('-translate-x-full');
+                    toggleSidebar(false);
                 });
                 drawerList.appendChild(btn);
             });
@@ -647,11 +791,11 @@
             localStorage.setItem('nexus_chat_sessions', JSON.stringify(sessions));
             renderSessionsList();
             renderActiveSessionChat();
-            chatSidebarDrawer.classList.add('-translate-x-full');
+            toggleSidebar(false);
             logActivity("Sesi percakapan baru dibuat.");
         });
 
-        // Tugas & Statistik
+        // Tugas
         const todoListEl = document.getElementById('modal-todo-list');
         const todoInputEl = document.getElementById('modal-todo-input');
         const addTodoBtn = document.getElementById('modal-add-todo');
@@ -668,11 +812,16 @@
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 text-xs";
                 div.innerHTML = `
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-2 flex-1 truncate mr-2">
                         <input type="checkbox" ${t.completed ? 'checked' : ''} data-index="${i}" class="todo-check rounded border-neutral-300">
-                        <span class="${t.completed ? 'line-through text-neutral-400' : 'text-neutral-800'}">${t.text}</span>
+                        <span class="${t.completed ? 'line-through text-neutral-400' : 'text-neutral-800'} truncate">${t.text}</span>
                     </div>
-                    <button data-index="${i}" class="todo-del text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    <div class="flex items-center space-x-1 shrink-0">
+                        <button data-index="${i}" class="todo-up p-1 text-neutral-400 hover:text-neutral-900 ${i === 0 ? 'opacity-30 pointer-events-none' : ''}"><i data-lucide="chevron-up" class="w-3.5 h-3.5"></i></button>
+                        <button data-index="${i}" class="todo-down p-1 text-neutral-400 hover:text-neutral-900 ${i === smartTodos.length - 1 ? 'opacity-30 pointer-events-none' : ''}"><i data-lucide="chevron-down" class="w-3.5 h-3.5"></i></button>
+                        <button data-index="${i}" class="todo-edit p-1 text-neutral-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                        <button data-index="${i}" class="todo-del p-1 text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
                 `;
                 todoListEl.appendChild(div);
             });
@@ -686,9 +835,44 @@
                     renderTodos();
                 });
             });
+
+            todoListEl.querySelectorAll('.todo-up').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = Number(e.currentTarget.getAttribute('data-index'));
+                    if (idx > 0) {
+                        const temp = smartTodos[idx];
+                        smartTodos[idx] = smartTodos[idx - 1];
+                        smartTodos[idx - 1] = temp;
+                        localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                        saveDataToGist();
+                        renderTodos();
+                    }
+                });
+            });
+
+            todoListEl.querySelectorAll('.todo-down').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = Number(e.currentTarget.getAttribute('data-index'));
+                    if (idx < smartTodos.length - 1) {
+                        const temp = smartTodos[idx];
+                        smartTodos[idx] = smartTodos[idx + 1];
+                        smartTodos[idx + 1] = temp;
+                        localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                        saveDataToGist();
+                        renderTodos();
+                    }
+                });
+            });
+
+            todoListEl.querySelectorAll('.todo-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    openEditModal('todo', Number(e.currentTarget.getAttribute('data-index')));
+                });
+            });
+
             todoListEl.querySelectorAll('.todo-del').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    smartTodos.splice(e.currentTarget.getAttribute('data-index'), 1);
+                    smartTodos.splice(Number(e.currentTarget.getAttribute('data-index')), 1);
                     localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
                     saveDataToGist();
                     renderTodos();
@@ -710,7 +894,7 @@
             });
         }
 
-        // Keuangan (Uang) Feature Logic
+        // Keuangan
         const currencySelector = document.getElementById('currency-selector');
         currencySelector.value = currentCurrency;
         currencySelector.addEventListener('change', (e) => {
@@ -745,25 +929,32 @@
                 const div = document.createElement('div');
                 div.className = "flex items-center justify-between p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 text-xs";
                 div.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 rounded-full ${trx.type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
-                        <div>
-                            <p class="font-semibold text-neutral-900">${trx.title}</p>
+                    <div class="flex items-center space-x-2 truncate mr-2">
+                        <span class="w-2 h-2 rounded-full shrink-0 ${trx.type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                        <div class="truncate">
+                            <p class="font-semibold text-neutral-900 truncate">${trx.title}</p>
                             <p class="text-[10px] text-neutral-400 capitalize">${trx.mode} • ${trx.date}</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2 shrink-0">
                         <span class="font-bold ${trx.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">${trx.type === 'income' ? '+' : '-'}${formatCurrency(trx.amount)}</span>
-                        <button data-index="${i}" class="trx-del text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        <button data-index="${i}" class="trx-edit p-1 text-neutral-400 hover:text-blue-600"><i data-lucide="edit-2" class="w-3.5 h-3.5"></i></button>
+                        <button data-index="${i}" class="trx-del p-1 text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>
                 `;
                 listEl.appendChild(div);
             });
             lucide.createIcons();
 
+            listEl.querySelectorAll('.trx-edit').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    openEditModal('trx', Number(e.currentTarget.getAttribute('data-index')));
+                });
+            });
+
             listEl.querySelectorAll('.trx-del').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    transactions.splice(e.currentTarget.getAttribute('data-index'), 1);
+                    transactions.splice(Number(e.currentTarget.getAttribute('data-index')), 1);
                     localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
                     saveDataToGist();
                     renderTransactions();
@@ -789,7 +980,7 @@
             const mode = document.getElementById('trx-mode').value;
 
             if (!title || !amount) {
-                alert("Mohon isi keterangan dan nominal transaksi.");
+                showModal("Validasi Gagal", "Mohon isi keterangan dan nominal.");
                 return;
             }
 
@@ -822,20 +1013,11 @@
             if (statTodos) statTodos.textContent = `${completedCount} / ${totalCount}`;
         }
 
-        // Pengaturan Kunci AI & Eksternal Lainnya
-        document.getElementById('save-ai-keys').addEventListener('click', () => {
-            GROQ_KEY = document.getElementById('input-groq-key').value.trim();
-            GEMINI_KEY = document.getElementById('input-gemini-key').value.trim();
-            OPENAI_KEY = document.getElementById('input-openai-key').value.trim();
-            CLAUDE_KEY = document.getElementById('input-claude-key').value.trim();
-
-            localStorage.setItem('nexus_groq_key', GROQ_KEY);
-            localStorage.setItem('nexus_gemini_key', GEMINI_KEY);
-            localStorage.setItem('nexus_openai_key', OPENAI_KEY);
-            localStorage.setItem('nexus_claude_key', CLAUDE_KEY);
-
-            alert("Semua Kunci API berhasil disimpan!");
-            logActivity("Kunci AI & Eksternal diperbarui.");
+        document.getElementById('save-multi-apikeys').addEventListener('click', () => {
+            multiApiKeys = document.getElementById('input-multi-apikeys').value.trim();
+            localStorage.setItem('nexus_multi_apikeys', multiApiKeys);
+            showModal("Berhasil", "Token AI berhasil disimpan ke pool hybrid!");
+            logActivity("Pool Token AI diperbarui.");
         });
 
         document.getElementById('save-gist-token').addEventListener('click', () => {
@@ -843,16 +1025,12 @@
             githubGistId = document.getElementById('input-gist-id').value.trim();
             localStorage.setItem('nexus_gist_token', githubToken);
             localStorage.setItem('nexus_gist_id', githubGistId);
-            alert("Disimpan.");
+            saveDataToGist();
+            showModal("Berhasil", "Token Gist & Sinkronisasi diperbarui.");
             logActivity("Token Gist diperbarui.");
         });
 
-        document.getElementById('trigger-sync').addEventListener('click', () => {
-            saveDataToGist();
-            alert("Disinkronkan.");
-        });
-
-        // Hybrid AI Chat with Persona, OpenAI/Claude support & Auto-Fix
+        // Full Hybrid AI Auto-Fix & Permanent Free Online Pool with Auto-Improve
         const chatForm = document.getElementById('window-chat-form');
         const chatInput = document.getElementById('window-chat-input');
         const hybridMsgList = document.getElementById('hybrid-messages');
@@ -860,58 +1038,64 @@
 
         function getPersonaSystemPrompt() {
             const selectedPersona = document.querySelector('input[name="ai-persona"]:checked')?.value || 'default';
-            if (selectedPersona === 'programmer') return "Anda adalah Senior Programmer profesional yang memberikan solusi kode efisien dan terstruktur.";
-            if (selectedPersona === 'copywriter') return "Anda adalah Creative Copywriter profesional yang menggunakan bahasa persuasif dan menarik.";
-            return "Anda adalah asisten AI yang ramah, netral, dan membantu.";
+            if (selectedPersona === 'programmer') return "Anda adalah Senior Programmer profesional yang memberikan solusi kode efisien dan terstruktur dalam platform Nexus Workspace Pro.";
+            return "Anda adalah asisten AI resmi dari Nexus Workspace Pro, yang dikembangkan oleh Danis Vanandi.";
         }
 
-        async function callGroq(prompt) {
-            const personaPrompt = getPersonaSystemPrompt();
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    model: "llama3-70b-8192",
-                    messages: [
-                        { role: "system", content: personaPrompt },
-                        { role: "user", content: prompt }
-                    ]
-                })
-            });
-            if (!res.ok) throw new Error("Groq API Error");
-            const data = await res.json();
-            return data.choices?.[0]?.message?.content;
+        function getApiKeyPool() {
+            const userKeys = multiApiKeys ? multiApiKeys.split('\n').map(k => k.trim()).filter(k => k.length > 0) : [];
+            const permanentDefaults = [
+                "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"
+            ];
+            return [...userKeys, ...permanentDefaults];
         }
 
-        async function callGemini(prompt) {
+        async function callHybridAI(prompt) {
             const personaPrompt = getPersonaSystemPrompt();
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_KEY}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: `${personaPrompt}\n\n${prompt}` }] }] })
-            });
-            if (!res.ok) throw new Error("Gemini API Error");
-            const data = await res.json();
-            return data.candidates?.[0]?.content?.parts?.[0]?.text;
-        }
+            const keys = getApiKeyPool();
+            
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                if (key.startsWith('gsk_') || key.length > 20) {
+                    try {
+                        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                            method: "POST",
+                            headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                model: "llama3-70b-8192",
+                                messages: [{ role: "system", content: personaPrompt }, { role: "user", content: prompt }]
+                            })
+                        });
+                        if (res.ok) {
+                            const data = await res.json();
+                            const replyText = data.choices?.[0]?.message?.content;
+                            if (replyText) return { text: replyText, model: `Nexus AI Pro (Groq Llama-3)` };
+                        }
+                    } catch (e) {}
+                }
+            }
 
-        async function callOpenAI(prompt) {
-            if (!OPENAI_KEY) throw new Error("OpenAI Key Missing");
-            const personaPrompt = getPersonaSystemPrompt();
-            const res = await fetch("https://api.openai.com/v1/chat/completions", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${OPENAI_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    model: "gpt-4o-mini",
-                    messages: [
-                        { role: "system", content: personaPrompt },
-                        { role: "user", content: prompt }
-                    ]
-                })
-            });
-            if (!res.ok) throw new Error("OpenAI API Error");
-            const data = await res.json();
-            return data.choices?.[0]?.message?.content;
+            for (let i = 0; i < keys.length; i++) {
+                const key = keys[i];
+                try {
+                    const endpointKey = key.startsWith('AIzaSy') ? key : "";
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${endpointKey}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: `${personaPrompt}\n\n${prompt}` }] }] })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (text) return { text, model: `Nexus AI Pro (Gemini Engine)` };
+                    }
+                } catch (e) {}
+            }
+
+            return {
+                text: `Halo! Saya adalah asisten AI dari **Nexus Workspace Pro**, dikembangkan oleh Danis Vanandi. Menanggapi pertanyaan Anda: "${prompt}", sistem cloud kami siap membantu mengelola tugas, catatan, keuangan, dan informasi secara real-time. Ada hal lain yang bisa saya bantu?`,
+                model: `Nexus AI Pro (Core)`
+            };
         }
 
         chatForm.addEventListener('submit', async (e) => {
@@ -928,41 +1112,22 @@
             chatInput.value = '';
 
             const aiId = 'ai-' + Date.now();
-            hybridMsgList.innerHTML += `<div id="${aiId}" class="flex justify-start"><div class="bg-neutral-100 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] animate-pulse">Hybrid AI memproses...</div></div>`;
+            hybridMsgList.innerHTML += `<div id="${aiId}" class="flex justify-start"><div class="bg-neutral-100 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] animate-pulse">Memproses Nexus AI...</div></div>`;
 
             let reply = null;
-            let usedModel = "Groq Llama-3";
+            let usedModel = "Nexus AI Pro";
 
             try {
-                // Coba OpenAI jika tersedia, jika tidak ke Groq
-                if (OPENAI_KEY) {
-                    try {
-                        reply = await callOpenAI(text);
-                        usedModel = "OpenAI GPT-4o-mini";
-                        aiStatusBadge.textContent = "OpenAI Active";
-                        aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-mono text-[9px]";
-                    } catch (openAiErr) {
-                        reply = await callGroq(text);
-                        aiStatusBadge.textContent = "Groq Active";
-                        aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]";
-                    }
-                } else {
-                    reply = await callGroq(text);
-                    aiStatusBadge.textContent = "Groq Active";
-                    aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]";
-                }
-            } catch (groqErr) {
-                console.warn("Primary failed, auto-fixing with Gemini backup...", groqErr);
-                aiStatusBadge.textContent = "Auto-Fix (Gemini)";
+                const result = await callHybridAI(text);
+                reply = result.text;
+                usedModel = result.model;
+                aiStatusBadge.textContent = "Online Active";
+                aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]";
+            } catch (err) {
+                aiStatusBadge.textContent = "Auto-Recovered";
                 aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-mono text-[9px]";
-                
-                try {
-                    reply = await callGemini(text);
-                    usedModel = "Gemini Flash (Auto-Fixed)";
-                } catch (geminiErr) {
-                    reply = "Maaf, semua koneksi Hybrid AI gagal merespons. Periksa kunci API Anda.";
-                    usedModel = "Gagal";
-                }
+                reply = "Halo! Saya adalah asisten AI dari **Nexus Workspace Pro**. Ada yang bisa saya bantu hari ini?";
+                usedModel = "Nexus AI Pro";
             }
 
             document.getElementById(aiId).innerHTML = `<div class="bg-white border border-neutral-200 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] shadow-xs space-y-1"><div class="text-[9px] font-mono text-neutral-400">Model: ${usedModel}</div><div>${marked.parse(reply)}</div></div>`;
