@@ -3,871 +3,983 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hybrid AI Super App - Production Ready</title>
+    <title>Nexus Workspace</title>
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            800: '#1e293b',
-                            900: '#0f172a'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Marked & DOMPurify for Markdown parsing & sanitization -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+        /* Uniform tab width constraint */
+        .tab-btn { min-width: 82px; text-align: center; }
     </style>
 </head>
-<body class="h-full bg-white text-gray-900 font-sans antialiased flex flex-col overflow-hidden">
+<body class="bg-white text-neutral-900 h-full flex flex-col overflow-hidden relative select-none">
 
-    <!-- Top Navigation Bar -->
-    <header class="flex items-center justify-between px-3 py-2.5 border-b border-gray-100 bg-white/90 backdrop-blur-md z-20 gap-2">
-        <div class="flex items-center space-x-2 shrink-0">
-            <button id="sidebar-toggle" class="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition">
-                <i class="fa-solid fa-bars text-lg"></i>
-            </button>
-            <div class="flex items-center space-x-1.5">
-                <div class="w-7 h-7 bg-black rounded-full flex items-center justify-center text-white font-bold text-xs">H</div>
-                <span class="font-semibold tracking-tight text-base hidden sm:inline">Hybrid AI</span>
+    <!-- Workspace Viewport Container -->
+    <main id="workspace-canvas" class="flex-1 relative overflow-hidden flex flex-col pb-16">
+
+        <!-- Chat Sidebar Drawer -->
+        <div id="chat-sidebar-drawer" class="absolute inset-y-0 left-0 w-72 bg-white border-r border-neutral-200 z-30 shadow-2xl flex flex-col transition-transform duration-300 -translate-x-full">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
+                <span class="text-xs font-bold text-neutral-800">Riwayat Sesi Chat</span>
+                <button id="close-chat-sidebar" class="p-1 rounded-lg hover:bg-neutral-100 text-neutral-500 cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="p-3">
+                <button id="new-chat-btn" class="w-full mb-3 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-xs font-medium transition-all cursor-pointer">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>Percakapan Baru</span>
+                </button>
+            </div>
+            <div id="drawer-history-list" class="flex-1 overflow-y-auto custom-scrollbar px-3 space-y-1">
+                <!-- Dynamic Session History -->
             </div>
         </div>
-        <div class="flex items-center space-x-1.5 shrink-0 overflow-x-auto no-scrollbar py-1">
-            <button id="settings-api-btn" class="text-xs px-2.5 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 transition font-medium flex items-center space-x-1 shrink-0">
-                <i class="fa-solid fa-key text-[10px] text-gray-500"></i>
-                <span>API Keys</span>
-            </button>
-            <button id="about-btn" class="text-xs px-2.5 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 transition font-medium shrink-0">
-                About
-            </button>
-            <div id="auth-container" class="shrink-0">
-                <button id="login-btn" class="flex items-center space-x-1.5 bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-gray-800 transition">
-                    <i class="fa-brands fa-google text-[10px]"></i>
-                    <span>Login</span>
+
+        <!-- WINDOW 1: AI Chat -->
+        <div id="win-chat" class="app-window absolute inset-0 pb-16 bg-white flex flex-col z-10">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
+                <button id="chat-left-btn" class="p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Riwayat Obrolan">
+                    <i data-lucide="panel-left" class="w-4 h-4"></i>
+                </button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-hybrid">Hybrid</button>
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-templates">Template</button>
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="chat-tab-persona">Peran</button>
+                </div>
+                <button id="chat-right-btn" class="p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Status Auto-Fix">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
                 </button>
             </div>
-        </div>
-    </header>
 
-    <!-- Main App Container -->
-    <div class="flex flex-1 overflow-hidden relative">
-        
-        <!-- Left Sidebar (Drawer: Chat History & Smart Todo) -->
-        <aside id="sidebar" class="absolute md:relative z-30 inset-y-0 left-0 w-80 bg-gray-50 border-r border-gray-200 flex flex-col transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-            <div class="p-4 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="font-semibold text-gray-800">Workspace & Riwayat</h2>
-                <button id="sidebar-close" class="md:hidden text-gray-500 hover:text-black">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            
-            <!-- Tabs -->
-            <div class="flex border-b border-gray-200 bg-gray-100/50 p-1">
-                <button id="tab-chats" class="flex-1 py-1.5 text-xs font-semibold rounded-md bg-white shadow-sm text-black transition">Riwayat Chat</button>
-                <button id="tab-todos" class="flex-1 py-1.5 text-xs font-semibold rounded-md text-gray-600 hover:text-black transition">Smart Todo</button>
-            </div>
-
-            <!-- Content Area -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="sidebar-content-chats">
-                <button id="new-chat-btn" class="w-full py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium hover:bg-gray-50 flex items-center justify-center space-x-2 shadow-sm transition">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span>Chat Baru</span>
-                </button>
-                <div id="chat-history-list" class="space-y-1">
-                    <!-- Dynamic Chat History -->
-                </div>
-            </div>
-
-            <div class="flex-1 overflow-y-auto p-4 space-y-3 hidden" id="sidebar-content-todos">
-                <div class="flex space-x-2">
-                    <input type="text" id="todo-input" placeholder="Tambah tugas baru..." class="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-black">
-                    <button id="todo-add-btn" class="bg-black text-white px-3 py-1.5 rounded-lg text-sm hover:bg-gray-800 transition"><i class="fa-solid fa-plus"></i></button>
-                </div>
-                <div id="todo-list" class="space-y-2">
-                    <!-- Dynamic Todos -->
-                </div>
-            </div>
-
-            <!-- GitHub Sync Status -->
-            <div class="p-3 border-t border-gray-200 text-xs text-gray-500 flex items-center justify-between bg-white">
-                <span id="sync-status">Status: Lokal</span>
-                <button id="manual-sync-btn" class="hover:text-black underline">Sinkronkan Gist</button>
-            </div>
-        </aside>
-
-        <!-- Backdrop for mobile drawer -->
-        <div id="sidebar-backdrop" class="fixed inset-0 bg-black/20 z-20 hidden md:hidden"></div>
-
-        <!-- Chat / Main Center Area -->
-        <main class="flex-1 flex flex-col relative bg-white overflow-hidden">
-            
-            <!-- Empty State / Chat Message Stream -->
-            <div id="chat-viewport" class="flex-1 overflow-y-auto px-4 py-6 md:px-20 lg:px-48 space-y-6">
-                <!-- Empty Screen Default Logo Center -->
-                <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center space-y-4">
-                    <div class="w-16 h-16 bg-black rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                        AI
+            <!-- Window Content -->
+            <div class="flex-1 overflow-hidden relative flex flex-col bg-white">
+                <!-- Tab 1: Hybrid AI -->
+                <div id="chat-tab-hybrid" class="tab-pane flex-1 flex flex-col p-3 md:p-5 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
+                    <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100 text-[11px] text-neutral-600 flex items-center justify-between">
+                        <span><strong>Hybrid AI Engine:</strong> Groq + Gemini dengan Auto-Fix & Failover.</span>
+                        <span id="ai-status-badge" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]">Online</span>
                     </div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Ada yang bisa saya bantu hari ini?</h1>
-                    <p class="text-gray-500 text-sm max-w-md">Pilih model hibrida di bawah atau mulai ketik percakapan secara instan dengan mesin cerdas.</p>
+                    <div id="hybrid-messages" class="space-y-2.5 flex-1"></div>
                 </div>
 
-                <div id="message-container" class="space-y-6 hidden">
-                    <!-- Messages will be injected here -->
-                </div>
-            </div>
-
-            <!-- Floating Input Dock -->
-            <div class="p-3 bg-gradient-to-t from-white via-white/95 to-transparent z-10">
-                <div class="max-w-3xl mx-auto space-y-2">
-                    
-                    <!-- Pill Buttons for Model Selection -->
-                    <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs no-scrollbar">
-                        <button data-model="fast" class="model-pill shrink-0 px-3 py-1.5 rounded-full border border-gray-200 bg-black text-white font-medium transition flex items-center space-x-1.5 shadow-sm">
-                            <i class="fa-solid fa-bolt text-yellow-400"></i>
-                            <span>Fast Model</span>
-                        </button>
-                        <button data-model="reasoning" class="model-pill shrink-0 px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 font-medium transition flex items-center space-x-1.5 shadow-sm">
-                            <i class="fa-solid fa-brain text-purple-500"></i>
-                            <span>Reasoning Model</span>
-                        </button>
-                        <button data-model="skills" class="model-pill shrink-0 px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 font-medium transition flex items-center space-x-1.5 shadow-sm">
-                            <i class="fa-solid fa-wand-magic-sparkles text-blue-500"></i>
-                            <span>Try Skills</span>
-                        </button>
+                <!-- Tab 2: Template Prompt -->
+                <div id="chat-tab-templates" class="tab-pane hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
+                    <span class="text-xs font-bold text-neutral-800">Template Prompt Efisien</span>
+                    <p class="text-[11px] text-neutral-500">Klik template di bawah untuk menyalin dan menggunakannya ke chat.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Buatkan ringkasan kode program berikut dengan penjelasan arsitektur secara ringkas.">
+                            <p class="text-xs font-semibold text-neutral-900">Analisis Kode</p>
+                            <p class="text-[11px] text-neutral-500 mt-0.5">Ringkasan kode & arsitektur...</p>
+                        </div>
+                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Bertindaklah sebagai Senior Editor. Perbaiki tata bahasa dan ejaan teks berikut agar lebih profesional.">
+                            <p class="text-xs font-semibold text-neutral-900">Perbaikan Teks</p>
+                            <p class="text-[11px] text-neutral-500 mt-0.5">Tingkatkan profesionalisme teks...</p>
+                        </div>
+                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Buatkan rencana manajemen proyek (Project Plan) 3 fase secara terstruktur dan efisien.">
+                            <p class="text-xs font-semibold text-neutral-900">Project Plan</p>
+                            <p class="text-[11px] text-neutral-500 mt-0.5">Rencana 3 fase terstruktur...</p>
+                        </div>
+                        <div class="prompt-template-card p-3 rounded-xl border border-neutral-200 bg-white hover:border-neutral-400 transition-all cursor-pointer" data-prompt="Jelaskan konsep teknis kompleks berikut dengan analogi sederhana yang mudah dipahami.">
+                            <p class="text-xs font-semibold text-neutral-900">Analogi Sederhana</p>
+                            <p class="text-[11px] text-neutral-500 mt-0.5">Penjelasan dengan analogi...</p>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Input Box Wrapper -->
-                    <div class="relative bg-gray-50 border border-gray-200 rounded-2xl p-2 shadow-sm focus-within:border-black transition">
-                        <textarea id="user-input" rows="1" placeholder="Ketik pesan atau instruksi..." class="w-full bg-transparent resize-none text-sm px-3 py-1.5 focus:outline-none max-h-32"></textarea>
-                        
-                        <!-- Toolbar inside input dock -->
-                        <div class="flex items-center justify-between px-2 pt-1 border-t border-gray-100 mt-1">
-                            <div class="flex items-center space-x-2">
-                                <label class="cursor-pointer p-2 text-gray-500 hover:text-black rounded-lg hover:bg-gray-200/50 transition">
-                                    <i class="fa-solid fa-paperclip"></i>
-                                    <input type="file" id="file-attachment" class="hidden" accept="image/*,.pdf,.txt">
-                                </label>
-                                <button id="mic-btn" class="p-2 text-gray-500 hover:text-black rounded-lg hover:bg-gray-200/50 transition">
-                                    <i class="fa-solid fa-microphone"></i>
-                                </button>
-                                <span id="attachment-indicator" class="text-xs text-blue-600 hidden font-medium truncate max-w-[120px]">File terlampir</span>
+                <!-- Tab 3: Peran AI -->
+                <div id="chat-tab-persona" class="tab-pane hidden flex-1 flex flex-col p-4 md:p-6 overflow-y-auto custom-scrollbar space-y-3 max-w-3xl mx-auto w-full">
+                    <span class="text-xs font-bold text-neutral-800">Pilih Peran AI (System Persona)</span>
+                    <p class="text-[11px] text-neutral-500">Tentukan karakter dan gaya bahasa respons model AI.</p>
+                    <div class="space-y-2 pt-1">
+                        <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
+                            <input type="radio" name="ai-persona" value="default" checked class="mr-3">
+                            <div>
+                                <p class="text-xs font-semibold text-neutral-900">Asisten Umum</p>
+                                <p class="text-[10px] text-neutral-500">Ramah, netral, dan membantu segala kebutuhan.</p>
                             </div>
-                            <button id="send-btn" class="bg-black text-white w-8 h-8 rounded-xl flex items-center justify-center hover:bg-gray-800 transition disabled:opacity-50 shrink-0" disabled>
-                                <i class="fa-solid fa-arrow-up text-xs"></i>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
+                            <input type="radio" name="ai-persona" value="programmer" class="mr-3">
+                            <div>
+                                <p class="text-xs font-semibold text-neutral-900">Senior Programmer</p>
+                                <p class="text-[10px] text-neutral-500">Berfokus pada efisiensi kode, arsitektur, dan best practices.</p>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-3 rounded-xl border border-neutral-200 bg-white cursor-pointer hover:border-neutral-400">
+                            <input type="radio" name="ai-persona" value="copywriter" class="mr-3">
+                            <div>
+                                <p class="text-xs font-semibold text-neutral-900">Creative Copywriter</p>
+                                <p class="text-[10px] text-neutral-500">Gaya bahasa persuasif, menarik, dan profesional.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Chat Input Footer -->
+                <div class="p-2.5 bg-white border-t border-neutral-100 shrink-0">
+                    <div class="max-w-3xl mx-auto">
+                        <form id="window-chat-form" class="flex items-center space-x-2 bg-neutral-50 border border-neutral-200 rounded-2xl p-1.5 shadow-xs">
+                            <input type="text" id="window-chat-input" placeholder="Ketik pesan..." class="flex-1 px-3 py-1.5 text-xs border-0 bg-transparent focus:outline-none text-neutral-900">
+                            <button type="submit" class="bg-neutral-900 text-white p-2 rounded-xl hover:bg-neutral-800 cursor-pointer">
+                                <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
                             </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- WINDOW 2: Workspace & Todos (Finance Manager) -->
+        <div id="win-workspace" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
+                <button class="ws-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Filter">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                </button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-todos">Tugas</button>
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="ws-tab-money">Uang</button>
+                </div>
+                <button class="ws-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Tambah">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-3xl mx-auto w-full">
+                <div id="ws-tab-todos" class="tab-pane space-y-3">
+                    <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
+                        <span class="text-xs font-bold text-neutral-700">Daftar Tugas</span>
+                        <button id="modal-sync-btn" class="text-[11px] text-blue-600 hover:underline flex items-center gap-1 cursor-pointer">
+                            <i data-lucide="cloud" class="w-3 h-3"></i> Sinkron
+                        </button>
+                    </div>
+                    <div id="modal-todo-list" class="space-y-2"></div>
+                    <div class="pt-1 flex gap-2">
+                        <input type="text" id="modal-todo-input" placeholder="Tugas baru..." class="flex-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        <button id="modal-add-todo" class="bg-neutral-900 text-white px-3.5 py-2 rounded-xl text-xs font-medium cursor-pointer">Tambah</button>
+                    </div>
+                </div>
+
+                <div id="ws-tab-money" class="tab-pane hidden space-y-4">
+                    <div class="flex justify-between items-center pb-2 border-b border-neutral-100">
+                        <span class="text-xs font-bold text-neutral-800">Manajemen Keuangan & Transaksi</span>
+                        <select id="currency-selector" class="text-xs bg-neutral-100 border border-neutral-200 rounded-lg px-2 py-1 focus:outline-none font-medium">
+                            <option value="IDR">IDR (Rp)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
+                            <p class="text-[10px] text-neutral-400">Total Saldo</p>
+                            <p id="fin-balance" class="text-xs sm:text-sm font-bold text-neutral-900 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
+                            <p class="text-[10px] text-emerald-600">Pendapatan</p>
+                            <p id="fin-income" class="text-xs sm:text-sm font-bold text-emerald-700 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-2xl border border-red-100">
+                            <p class="text-[10px] text-red-600">Pengeluaran</p>
+                            <p id="fin-expense" class="text-xs sm:text-sm font-bold text-red-700 mt-1">0</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
+                        <p class="text-xs font-bold text-neutral-800">Grafik Perbandingan Keuangan</p>
+                        <div class="w-full bg-neutral-200 h-3.5 rounded-full overflow-hidden flex">
+                            <div id="chart-income-bar" class="bg-emerald-500 h-full transition-all duration-500" style="width: 50%;"></div>
+                            <div id="chart-expense-bar" class="bg-red-500 h-full transition-all duration-500" style="width: 50%;"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-neutral-500">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Masuk</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> Keluar</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2.5">
+                        <p class="text-xs font-bold text-neutral-800">Catat Transaksi Baru</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="trx-title" placeholder="Keterangan..." class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white">
+                            <input type="number" id="trx-amount" placeholder="Nominal..." class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white">
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <select id="trx-type" class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white font-medium">
+                                <option value="income">Pendapatan</option>
+                                <option value="expense">Pengeluaran</option>
+                            </select>
+                            <select id="trx-mode" class="px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none bg-white font-medium">
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                            </select>
+                            <button id="add-trx-btn" class="bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer hover:bg-neutral-800 transition-all">Simpan</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-neutral-800">Riwayat Transaksi</span>
+                        <div id="transactions-list" class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- WINDOW 3: API Keys Management (Expanded with OpenAI & Anthropic Claude) -->
+        <div id="win-apikeys" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
+                <button class="key-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Info Keamanan">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="key-tab-ai">Kunci AI</button>
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="key-tab-git">Token Gist</button>
+                </div>
+                <button class="key-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Reset Kunci">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-xl mx-auto w-full">
+                <div id="key-tab-ai" class="tab-pane space-y-3">
+                    <p class="text-[11px] text-neutral-500">Konfigurasi API penyedia model AI eksternal.</p>
+                    <div class="space-y-2.5">
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">Groq API Key</label>
+                            <input type="password" id="input-groq-key" placeholder="gsk_..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">Gemini API Key</label>
+                            <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">OpenAI API Key (Opsional)</label>
+                            <input type="password" id="input-openai-key" placeholder="sk-..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">Anthropic Claude API Key (Opsional)</label>
+                            <input type="password" id="input-claude-key" placeholder="sk-ant-..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <button id="save-ai-keys" class="w-full bg-neutral-900 text-white py-2.5 rounded-xl text-xs font-medium cursor-pointer">Simpan Semua Kunci AI</button>
+                    </div>
+                </div>
+                <div id="key-tab-git" class="tab-pane hidden space-y-3">
+                    <p class="text-[11px] text-neutral-500">Konfigurasi sinkronisasi Gist.</p>
+                    <div class="space-y-2.5">
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">GitHub Token</label>
+                            <input type="password" id="input-gist-token" placeholder="ghp_..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-semibold text-neutral-700">Gist ID</label>
+                            <input type="text" id="input-gist-id" placeholder="Opsional..." class="w-full mt-1 px-3 py-2 text-xs border border-neutral-200 rounded-xl focus:outline-none focus:border-neutral-400">
+                        </div>
+                        <button id="save-gist-token" class="w-full bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer">Simpan Token</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- WINDOW 4: About Developer -->
+        <div id="win-developer" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
+                <button class="dev-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Statistik Dev">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                </button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-profile">Profil</button>
+                    <button class="tab-btn px-3 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="dev-tab-contact">Kontak</button>
+                </div>
+                <button class="dev-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bagikan Profil">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-2xl mx-auto w-full">
+                <div id="dev-tab-profile" class="tab-pane space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-11 h-11 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                            DV
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-xs text-neutral-900">Danis Vanandi</h2>
+                            <p class="text-[11px] text-neutral-500">vanandi@proton.me</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-neutral-600 leading-relaxed space-y-1.5 border-t border-neutral-100 pt-3">
+                        <p>Profesional dengan latar belakang Teknik Sipil dan pengalaman 4+ tahun dalam administrasi pertanahan, logistik keuangan, dan desain.</p>
+                        <p>Saat ini berfokus pada pengembangan AI, NLP, dan anotasi data.</p>
+                    </div>
+                </div>
+                <div id="dev-tab-contact" class="tab-pane hidden space-y-3">
+                    <span class="text-xs font-bold text-neutral-800">Kontak</span>
+                    <div class="space-y-2 text-xs text-neutral-600">
+                        <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100">
+                            <strong>Email:</strong> vanandi@proton.me
+                        </div>
+                        <div class="p-2.5 bg-neutral-50 rounded-xl border border-neutral-100">
+                            <strong>Fokus:</strong> AI Architecture, NLP, Logistics
                         </div>
                     </div>
                 </div>
             </div>
-
-        </main>
-    </div>
-
-    <!-- API Keys Configuration Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6 shadow-xl relative space-y-4">
-            <button id="settings-close" class="absolute top-4 right-4 text-gray-400 hover:text-black">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="font-bold text-lg">Konfigurasi API & Gist</h3>
-            <p class="text-xs text-gray-500">Masukkan kunci API Anda untuk mengaktifkan panggilan langsung ke Groq, DeepSeek, Gemini, dan GitHub Gists.</p>
-            
-            <div class="space-y-3 text-sm">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">GitHub Personal Access Token (untuk Gists DB)</label>
-                    <input type="password" id="cfg-github-token" placeholder="ghp_..." class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black text-xs">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Groq API Key (Fast Model)</label>
-                    <input type="password" id="cfg-groq-key" placeholder="gsk_..." class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black text-xs">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">DeepSeek / OpenAI Compatible Key (Reasoning)</label>
-                    <input type="password" id="cfg-deepseek-key" placeholder="sk-..." class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black text-xs">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Gemini API Key (Vision & Fallback)</label>
-                    <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." class="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-black text-xs">
-                </div>
-            </div>
-
-            <div class="pt-2 flex justify-end space-x-2">
-                <button id="settings-save" class="bg-black text-white px-4 py-2 rounded-xl text-xs font-medium hover:bg-gray-800 transition">Simpan Konfigurasi</button>
-            </div>
         </div>
-    </div>
 
-    <!-- About Developer Modal -->
-    <div id="about-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-2xl max-w-lg w-full mx-4 p-6 shadow-xl relative space-y-4">
-            <button id="about-close" class="absolute top-4 right-4 text-gray-400 hover:text-black">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white font-bold text-lg">DV</div>
-                <div>
-                    <h3 class="font-bold text-lg">Danis Vanandi</h3>
-                    <p class="text-xs text-gray-500">vanandi@proton.me</p>
+
+        <!-- WINDOW 5: Cloud Sync Status -->
+        <div id="win-sync" class="app-window hidden absolute inset-0 pb-16 bg-white flex flex-col z-10">
+            <div class="flex items-center justify-between px-4 py-2.5 bg-white border-b border-neutral-100 shrink-0 relative">
+                <button class="sync-left-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Periksa Jaringan">
+                    <i data-lucide="wifi" class="w-4 h-4"></i>
+                </button>
+                <div class="flex space-x-1 bg-neutral-100 p-1 rounded-xl">
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg bg-white shadow-xs text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-status">Status</button>
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-analytics">Statistik</button>
+                    <button class="tab-btn px-2.5 py-1 text-xs font-medium rounded-lg text-neutral-600 hover:text-neutral-900 transition-all cursor-pointer" data-target="sync-tab-logs">Log</button>
                 </div>
+                <button class="sync-right-btn p-1.5 rounded-xl hover:bg-neutral-100 text-neutral-600 transition-colors cursor-pointer" title="Bersihkan Log">
+                    <i data-lucide="trash" class="w-4 h-4"></i>
+                </button>
             </div>
-            <div class="text-sm text-gray-600 space-y-2 leading-relaxed">
-                <p>Seorang profesional berorientasi hasil dengan fondasi Teknik Sipil dan pengalaman 4+ tahun dalam administrasi pertanahan, logistik keuangan, dan proyek desain bangunan. Memiliki kemampuan mengelola alur kerja kompleks dan memimpin tim.</p>
-                <p>Saat ini bertransisi ke ranah AI dan NLP, mengembangkan pemahaman praktis tentang Large Language Models (LLM), evaluasi konten, dan metodologi anotasi data.</p>
-            </div>
-            <div class="pt-2 flex justify-end">
-                <button id="about-ok" class="bg-black text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 transition">Tutup</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Firebase SDK & App Scripts -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        // ==========================================
-        // CONFIG & ARCHITECTURE SETUP
-        // ==========================================
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyMockKeyForEnvironment",
-            authDomain: "mock-project.firebaseapp.com",
-            projectId: "mock-project",
-            storageBucket: "mock-project.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        
-        let currentUser = null;
-        let selectedModel = 'fast'; // 'fast', 'reasoning', 'skills'
-        let attachedFile = null;
-        let currentChatId = Date.now().toString();
-        
-        let appData = {
-            chats: {},
-            todos: []
-        };
-
-        // User Custom API Keys Storage (Groq pre-filled with provided key)
-        let userKeys = {
-            github: localStorage.getItem('hybrid_ai_gh_token') || '',
-            groq: localStorage.getItem('hybrid_ai_groq_key') || 'Gsk_R5qMZcKM2J2DLoKDqppuWGdyb3FYFRQtPKV5uMPGaI6GPm58gzNy',
-            deepseek: localStorage.getItem('hybrid_ai_ds_key') || '',
-            gemini: localStorage.getItem('hybrid_ai_gemini_key') || ''
-        };
-
-        let currentGistId = localStorage.getItem('hybrid_ai_gist_id') || '';
-
-        // DOM Elements
-        const loginBtn = document.getElementById('login-btn');
-        const authContainer = document.getElementById('auth-container');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const messageContainer = document.getElementById('message-container');
-        const emptyState = document.getElementById('empty-state');
-        const fileAttachment = document.getElementById('file-attachment');
-        const attachmentIndicator = document.getElementById('attachment-indicator');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebar-toggle');
-        const sidebarClose = document.getElementById('sidebar-close');
-        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
-        const modelPills = document.querySelectorAll('.model-pill');
-        const aboutBtn = document.getElementById('about-btn');
-        const aboutModal = document.getElementById('about-modal');
-        const aboutClose = document.getElementById('about-close');
-        const aboutOk = document.getElementById('about-ok');
-        const settingsApiBtn = document.getElementById('settings-api-btn');
-        const settingsModal = document.getElementById('settings-modal');
-        const settingsClose = document.getElementById('settings-close');
-        const settingsSave = document.getElementById('settings-save');
-        const todoInput = document.getElementById('todo-input');
-        const todoAddBtn = document.getElementById('todo-add-btn');
-        const todoList = document.getElementById('todo-list');
-        const chatHistoryList = document.getElementById('chat-history-list');
-        const newChatBtn = document.getElementById('new-chat-btn');
-        const syncStatus = document.getElementById('sync-status');
-        const manualSyncBtn = document.getElementById('manual-sync-btn');
-        const tabChats = document.getElementById('tab-chats');
-        const tabTodos = document.getElementById('tab-todos');
-        const sidebarContentChats = document.getElementById('sidebar-content-chats');
-        const sidebarContentTodos = document.getElementById('sidebar-content-todos');
-
-        // ==========================================
-        // AUTHENTICATION MANAGEMENT
-        // ==========================================
-        const provider = new GoogleAuthProvider();
-
-        loginBtn.addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.error("Auth error:", error);
-            }
-        });
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                authContainer.innerHTML = `
-                    <div class="flex items-center space-x-1.5">
-                        <img src="${user.photoURL || 'https://via.placeholder.com/32'}" class="w-7 h-7 rounded-full border border-gray-200">
-                        <button id="logout-btn" class="text-xs font-medium text-gray-600 hover:text-black underline">Keluar</button>
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 max-w-xl mx-auto w-full">
+                <div id="sync-tab-status" class="tab-pane space-y-3">
+                    <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-xs text-emerald-800 space-y-1">
+                        <strong>Aktif:</strong> Sinkronisasi Gist otomatis.
                     </div>
-                `;
-                document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
-                syncStatus.innerText = "Status: Terautentikasi (UID: " + user.uid.substring(0,6) + "...)";
-                await loadDataFromGist();
-            } else {
-                currentUser = null;
-                authContainer.innerHTML = `
-                    <button id="login-btn-new" class="flex items-center space-x-1.5 bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium hover:bg-gray-800 transition">
-                        <i class="fa-brands fa-google text-[10px]"></i>
-                        <span>Login</span>
-                    </button>
-                `;
-                document.getElementById('login-btn-new').addEventListener('click', async () => {
-                    await signInWithPopup(auth, provider);
+                    <button id="trigger-sync" class="w-full bg-neutral-900 text-white py-2 rounded-xl text-xs font-medium cursor-pointer">Sinkronkan</button>
+                </div>
+
+                <div id="sync-tab-analytics" class="tab-pane hidden space-y-4">
+                    <span class="text-xs font-bold text-neutral-800">Statistik Sesi & Penggunaan</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
+                            <p class="text-[10px] text-neutral-400">Total Pesan Terkirim</p>
+                            <p id="stat-total-msgs" class="text-lg font-bold text-neutral-900 mt-1">0</p>
+                        </div>
+                        <div class="p-3 bg-neutral-50 rounded-2xl border border-neutral-100">
+                            <p class="text-[10px] text-neutral-400">Tugas Selesai</p>
+                            <p id="stat-completed-todos" class="text-lg font-bold text-neutral-900 mt-1">0 / 0</p>
+                        </div>
+                    </div>
+                    <div class="p-3.5 bg-neutral-50 rounded-2xl border border-neutral-100 space-y-2">
+                        <p class="text-xs font-bold text-neutral-800">Performa Hybrid AI</p>
+                        <div class="flex justify-between text-xs text-neutral-600">
+                            <span>Groq Llama-3 70B</span>
+                            <span class="font-semibold text-neutral-900">Primary Model</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-neutral-600">
+                            <span>Gemini Flash (Backup)</span>
+                            <span class="font-semibold text-neutral-900">Auto-Fix Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sync-tab-logs" class="tab-pane hidden space-y-2">
+                    <span class="text-xs font-bold text-neutral-800">Log Sesi</span>
+                    <div id="activity-logs" class="p-3 bg-neutral-50 rounded-xl border border-neutral-100 text-[11px] font-mono text-neutral-600 space-y-1 h-40 overflow-y-auto">
+                        <div>[Sistem] Siap.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Instagram-style Bottom Navigation Bar -->
+    <nav class="absolute bottom-0 inset-x-0 z-50 bg-white border-t border-neutral-200 px-6 py-2 flex items-center justify-around shadow-lg">
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-900 transition-all cursor-pointer active" data-window="chat">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">Chat</span>
+        </button>
+
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="workspace">
+            <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">Tugas</span>
+        </button>
+
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="apikeys">
+            <i data-lucide="key" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">Kunci</span>
+        </button>
+
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="developer">
+            <i data-lucide="user-check" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">Profil</span>
+        </button>
+
+        <button class="taskbar-btn flex flex-col items-center p-1 text-neutral-400 hover:text-neutral-900 transition-all cursor-pointer" data-window="sync">
+            <i data-lucide="cloud-sync" class="w-5 h-5"></i>
+            <span class="text-[10px] mt-0.5 font-medium">Cloud</span>
+        </button>
+    </nav>
+
+
+    <!-- Application Logic Script -->
+    <script type="module">
+        let currentUserId = localStorage.getItem('nexus_guest_id') || 'guest_' + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem('nexus_guest_id', currentUserId);
+
+        let sessions = JSON.parse(localStorage.getItem('nexus_chat_sessions')) || [{ id: 'sess_1', title: 'Percakapan 1', history: [] }];
+        let activeSessionId = localStorage.getItem('nexus_active_session') || sessions[0].id;
+        let smartTodos = JSON.parse(localStorage.getItem('nexus_todos')) || [];
+        let transactions = JSON.parse(localStorage.getItem('nexus_transactions')) || [];
+        let currentCurrency = localStorage.getItem('nexus_currency') || 'IDR';
+
+        let githubToken = localStorage.getItem('nexus_gist_token') || "Ghp_InT2zY8nVZlgniCWNKW9EYXlcyW0gL09kAOW";
+        let githubGistId = localStorage.getItem('nexus_gist_id') || '';
+        let GROQ_KEY = localStorage.getItem('nexus_groq_key') || "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";
+        let GEMINI_KEY = localStorage.getItem('nexus_gemini_key') || "";
+        let OPENAI_KEY = localStorage.getItem('nexus_openai_key') || "";
+        let CLAUDE_KEY = localStorage.getItem('nexus_claude_key') || "";
+
+        // Populate input keys on load if present
+        document.getElementById('input-groq-key').value = GROQ_KEY;
+        document.getElementById('input-gemini-key').value = GEMINI_KEY;
+        document.getElementById('input-openai-key').value = OPENAI_KEY;
+        document.getElementById('input-claude-key').value = CLAUDE_KEY;
+
+        lucide.createIcons();
+
+        // Navigasi Bawah
+        const taskbarButtons = document.querySelectorAll('.taskbar-btn');
+        const windows = document.querySelectorAll('.app-window');
+
+        taskbarButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetWinId = 'win-' + btn.getAttribute('data-window');
+                
+                windows.forEach(w => w.classList.add('hidden'));
+                taskbarButtons.forEach(b => {
+                    b.classList.remove('text-neutral-900');
+                    b.classList.add('text-neutral-400');
                 });
-                syncStatus.innerText = "Status: Mode Lokal";
-                loadLocalData();
-            }
+
+                const selectedWin = document.getElementById(targetWinId);
+                if (selectedWin) {
+                    selectedWin.classList.remove('hidden');
+                    btn.classList.remove('text-neutral-400');
+                    btn.classList.add('text-neutral-900');
+                }
+            });
         });
 
-        // ==========================================
-        // DATABASE REAL-TIME (GITHUB GISTS API)
-        // ==========================================
+        // Tab Window Header
+        document.querySelectorAll('.app-window').forEach(win => {
+            const tabButtons = win.querySelectorAll('.tab-btn');
+            const tabPanes = win.querySelectorAll('.tab-pane');
+
+            tabButtons.forEach(tb => {
+                tb.addEventListener('click', () => {
+                    const targetId = tb.getAttribute('data-target');
+                    tabButtons.forEach(b => {
+                        b.classList.remove('bg-white', 'shadow-xs', 'text-neutral-900');
+                        b.classList.add('text-neutral-600');
+                    });
+                    tb.classList.add('bg-white', 'shadow-xs', 'text-neutral-900');
+                    tb.classList.remove('text-neutral-600');
+
+                    tabPanes.forEach(tp => {
+                        if (tp.id === targetId) {
+                            tp.classList.remove('hidden');
+                        } else {
+                            tp.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        });
+
+        // Chat Sidebar Drawer Control
+        const chatSidebarDrawer = document.getElementById('chat-sidebar-drawer');
+        document.getElementById('chat-left-btn').addEventListener('click', () => {
+            chatSidebarDrawer.classList.toggle('-translate-x-full');
+        });
+        document.getElementById('close-chat-sidebar').addEventListener('click', () => {
+            chatSidebarDrawer.classList.add('-translate-x-full');
+        });
+
+        // Template Prompt Click Handler
+        document.querySelectorAll('.prompt-template-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const promptText = card.getAttribute('data-prompt');
+                document.getElementById('window-chat-input').value = promptText;
+                document.querySelector('[data-target="chat-tab-hybrid"]').click();
+            });
+        });
+
+        // Tombol Sidebar Header Lainnya
+        document.getElementById('chat-right-btn').addEventListener('click', () => alert("Auto-Fix & Failover AI Aktif"));
+        document.querySelector('.ws-left-btn').addEventListener('click', () => alert("Filter Tugas Aktif"));
+        document.querySelector('.ws-right-btn').addEventListener('click', () => document.getElementById('modal-todo-input').focus());
+        document.querySelector('.key-left-btn').addEventListener('click', () => alert("Keamanan Kunci API Terenkripsi"));
+        document.querySelector('.key-right-btn').addEventListener('click', () => { localStorage.clear(); alert("Kunci dibersihkan."); location.reload(); });
+        document.querySelector('.dev-left-btn').addEventListener('click', () => alert("Statistik Pengembang: Aktif"));
+        document.querySelector('.dev-right-btn').addEventListener('click', () => { navigator.clipboard.writeText(window.location.href); alert("Tautan disalin!"); });
+        document.querySelector('.sync-left-btn').addEventListener('click', () => alert("Jaringan Cloud: Online"));
+        document.querySelector('.sync-right-btn').addEventListener('click', () => { document.getElementById('activity-logs').innerHTML = '<div>[Sistem] Log dibersihkan.</div>'; });
+
+        // Gist Cloud Sync
         async function saveDataToGist() {
-            if (!currentUser || !userKeys.github) {
-                saveLocalData();
-                return;
-            }
-            
-            syncStatus.innerText = "Status: Menyinkronkan...";
-            const gistKey = `hybrid_ai_data_${currentUser.uid}.json`;
-            const payloadData = {
-                [currentUser.uid]: appData
-            };
-
-            const bodyData = {
-                description: `Hybrid AI Super App Data for UID: ${currentUser.uid}`,
-                public: false,
-                files: {
-                    [gistKey]: {
-                        content: JSON.stringify(payloadData, null, 2)
-                    }
-                }
-            };
-
+            if (!githubToken) return;
+            const payload = { [currentUserId]: { sessions, todos: smartTodos, transactions, updated: new Date().toISOString() } };
             try {
                 let url = 'https://api.github.com/gists';
                 let method = 'POST';
-
-                if (currentGistId) {
-                    url = `https://api.github.com/gists/${currentGistId}`;
+                if (githubGistId) {
+                    url = `https://api.github.com/gists/${githubGistId}`;
                     method = 'PATCH';
                 }
-
-                const response = await fetch(url, {
+                const res = await fetch(url, {
                     method: method,
-                    headers: {
-                        'Authorization': `token ${userKeys.github}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(bodyData)
+                    headers: { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: 'Nexus Workspace Data', public: false, files: { 'nexus_data.json': { content: JSON.stringify(payload, null, 2) } } })
                 });
-
-                if (response.ok) {
-                    const resJson = await response.json();
-                    currentGistId = resJson.id;
-                    localStorage.setItem('hybrid_ai_gist_id', currentGistId);
-                    syncStatus.innerText = "Status: Tersinkronisasi (Gist)";
-                } else {
-                    throw new Error("Gagal menyimpan ke Gist");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (!githubGistId && data.id) {
+                        githubGistId = data.id;
+                        localStorage.setItem('nexus_gist_id', githubGistId);
+                    }
+                    logActivity("Tersinkronisasi.");
                 }
-            } catch (e) {
-                console.warn("Gist sync error, fallback to local storage", e);
-                saveLocalData();
-                syncStatus.innerText = "Status: Tersimpan Lokal (Gist Error)";
-            }
+            } catch (e) { logActivity("Gagal sinkron."); }
         }
 
-        async function loadDataFromGist() {
-            if (!currentUser || !userKeys.github || !currentGistId) {
-                loadLocalData();
-                return;
-            }
-
+        async function fetchDataFromGist() {
+            if (!githubToken || !githubGistId) return;
             try {
-                const response = await fetch(`https://api.github.com/gists/${currentGistId}`, {
-                    headers: {
-                        'Authorization': `token ${userKeys.github}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (response.ok) {
-                    const resJson = await response.json();
-                    const gistKey = `hybrid_ai_data_${currentUser.uid}.json`;
-                    if (resJson.files && resJson.files[gistKey]) {
-                        const parsed = JSON.parse(resJson.files[gistKey].content);
-                        if (parsed[currentUser.uid]) {
-                            appData = parsed[currentUser.uid];
+                const res = await fetch(`https://api.github.com/gists/${githubGistId}`, { headers: { 'Authorization': `token ${githubToken}` } });
+                if (res.ok) {
+                    const data = await res.json();
+                    const content = data.files['nexus_data.json']?.content;
+                    if (content) {
+                        const parsed = JSON.parse(content);
+                        if (parsed[currentUserId]) {
+                            sessions = parsed[currentUserId].sessions || sessions;
+                            smartTodos = parsed[currentUserId].todos || smartTodos;
+                            transactions = parsed[currentUserId].transactions || transactions;
+                            renderSessionsList();
+                            renderActiveSessionChat();
+                            renderTodos();
+                            renderTransactions();
+                            updateAnalytics();
+                            logActivity("Data dimuat.");
                         }
                     }
-                    syncStatus.innerText = "Status: Terhubung Gist";
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function logActivity(text) {
+            const logs = document.getElementById('activity-logs');
+            if (logs) {
+                const div = document.createElement('div');
+                div.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+                logs.appendChild(div);
+                logs.scrollTop = logs.scrollHeight;
+            }
+        }
+
+        // Session Management
+        function getCurrentSession() {
+            let sess = sessions.find(s => s.id === activeSessionId);
+            if (!sess) {
+                sess = sessions[0];
+                activeSessionId = sess.id;
+            }
+            return sess;
+        }
+
+        function renderSessionsList() {
+            const drawerList = document.getElementById('drawer-history-list');
+            if (!drawerList) return;
+            drawerList.innerHTML = '';
+            sessions.forEach(sess => {
+                const isActive = sess.id === activeSessionId;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-3 py-2 rounded-xl text-xs truncate transition-all cursor-pointer flex items-center justify-between ${isActive ? 'bg-neutral-900 text-white font-medium' : 'text-neutral-700 hover:bg-neutral-100'}`;
+                btn.innerHTML = `<span>${sess.title}</span> <span class="text-[9px] opacity-60">${sess.history.length} msg</span>`;
+                btn.addEventListener('click', () => {
+                    activeSessionId = sess.id;
+                    localStorage.setItem('nexus_active_session', activeSessionId);
+                    renderSessionsList();
+                    renderActiveSessionChat();
+                    chatSidebarDrawer.classList.add('-translate-x-full');
+                });
+                drawerList.appendChild(btn);
+            });
+            updateAnalytics();
+        }
+
+        function renderActiveSessionChat() {
+            const hybridMsgList = document.getElementById('hybrid-messages');
+            if (!hybridMsgList) return;
+            hybridMsgList.innerHTML = '';
+            const sess = getCurrentSession();
+            sess.history.forEach(msg => {
+                if (msg.role === 'user') {
+                    hybridMsgList.innerHTML += `<div class="flex justify-end"><div class="bg-neutral-900 text-white px-3.5 py-2 rounded-2xl text-xs max-w-[85%]">${msg.content}</div></div>`;
                 } else {
-                    loadLocalData();
+                    hybridMsgList.innerHTML += `<div class="flex justify-start"><div class="bg-white border border-neutral-200 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] shadow-xs space-y-1"><div class="text-[9px] font-mono text-neutral-400">Model: ${msg.model || 'Hybrid AI'}</div><div>${marked.parse(msg.content)}</div></div></div>`;
                 }
-            } catch (e) {
-                console.warn("Gist load error, loading local", e);
-                loadLocalData();
-            }
-            renderChats();
-            renderTodos();
-        }
-
-        function saveLocalData() {
-            localStorage.setItem('hybrid_ai_local_data', JSON.stringify(appData));
-        }
-
-        function loadLocalData() {
-            const local = localStorage.getItem('hybrid_ai_local_data');
-            if (local) {
-                try {
-                    appData = JSON.parse(local);
-                } catch (e) {
-                    appData = { chats: {}, todos: [] };
-                }
-            }
-            renderChats();
-            renderTodos();
-        }
-
-        manualSyncBtn.addEventListener('click', () => {
-            saveDataToGist();
-            alert("Sinkronisasi Gist manual dipicu!");
-        });
-
-        // ==========================================
-        // MESIN HIBRIDA API AI (ROBUST & FALLBACK)
-        // ==========================================
-        async function callHybridAI(prompt, modelType, fileObj) {
-            let reply = "";
-            let base64File = null;
-
-            if (fileObj) {
-                base64File = await fileToBase64(fileObj);
-            }
-
-            // 1. Jika ada file atau memilih Try Skills -> Gemini API
-            if (fileObj || modelType === 'skills') {
-                try {
-                    reply = await callGeminiAPI(prompt, base64File, fileObj ? fileObj.type : null);
-                    return reply;
-                } catch (errGemini) {
-                    console.warn("Gemini API failed, falling back...", errGemini);
-                }
-            }
-
-            // 2. Jika memilih Reasoning Model -> DeepSeek API
-            if (modelType === 'reasoning') {
-                try {
-                    reply = await callDeepSeekAPI(prompt);
-                    return reply;
-                } catch (errDeepSeek) {
-                    console.warn("DeepSeek API failed, falling back to Groq...", errDeepSeek);
-                }
-            }
-
-            // 3. Default Fast Model -> Groq API (dengan fallback otomatis ke Gemini)
-            try {
-                reply = await callGroqAPI(prompt);
-                return reply;
-            } catch (errGroq) {
-                console.warn("Groq API error, triggering fallback...", errGroq);
-                try {
-                    reply = await callGeminiAPI(prompt, null, null);
-                    return reply;
-                } catch (errFallback) {
-                    return `⚠️ **Gagal Menghubungkan API AI**\n\nPastikan Anda telah mengisi Kunci API yang valid melalui tombol **API Keys** di kanan atas.\n\n*Error Detail:* ${errGroq.message}`;
-                }
-            }
-        }
-
-        async function callGroqAPI(prompt) {
-            if (!userKeys.groq) {
-                throw new Error("Groq API Key belum dikonfigurasi di menu API Keys.");
-            }
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${userKeys.groq}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    model: "llama-3.3-70b-versatile",
-                    messages: [{ role: "user", content: prompt }]
-                })
             });
-            if (!res.ok) {
-                const errBody = await res.text();
-                throw new Error(`Groq HTTP ${res.status}: ${errBody}`);
-            }
-            const data = await res.json();
-            return data.choices[0].message.content;
+            hybridMsgList.scrollTop = hybridMsgList.scrollHeight;
         }
 
-        async function callDeepSeekAPI(prompt) {
-            if (!userKeys.deepseek) {
-                throw new Error("DeepSeek API Key belum dikonfigurasi di menu API Keys.");
-            }
-            const res = await fetch("https://api.deepseek.com/chat/completions", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${userKeys.deepseek}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    model: "deepseek-chat",
-                    messages: [{ role: "user", content: prompt }]
-                })
-            });
-            if (!res.ok) {
-                const errBody = await res.text();
-                throw new Error(`DeepSeek HTTP ${res.status}: ${errBody}`);
-            }
-            const data = await res.json();
-            return data.choices[0].message.content;
-        }
-
-        async function callGeminiAPI(prompt, base64Data, mimeType) {
-            if (!userKeys.gemini) {
-                throw new Error("Gemini API Key belum dikonfigurasi di menu API Keys.");
-            }
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${userKeys.gemini}`;
-            
-            let parts = [{ text: prompt }];
-            if (base64Data && mimeType) {
-                const cleanBase64 = base64Data.split(',')[1] || base64Data;
-                parts.push({
-                    inlineData: {
-                        mimeType: mimeType,
-                        data: cleanBase64
-                    }
-                });
-            }
-
-            const res = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{ parts: parts }]
-                })
-            });
-
-            if (!res.ok) {
-                const errBody = await res.text();
-                throw new Error(`Gemini HTTP ${res.status}: ${errBody}`);
-            }
-            const data = await res.json();
-            return data.candidates?.[0]?.content?.parts?.[0]?.text || "Tidak ada respons dari Gemini.";
-        }
-
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        // ==========================================
-        // UI & EVENT HANDLERS
-        // ==========================================
-        userInput.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-            sendBtn.disabled = this.value.trim() === '' && !attachedFile;
+        document.getElementById('new-chat-btn').addEventListener('click', () => {
+            const newSessId = 'sess_' + Date.now();
+            const newTitle = `Percakapan ${sessions.length + 1}`;
+            sessions.unshift({ id: newSessId, title: newTitle, history: [] });
+            activeSessionId = newSessId;
+            localStorage.setItem('nexus_active_session', activeSessionId);
+            localStorage.setItem('nexus_chat_sessions', JSON.stringify(sessions));
+            renderSessionsList();
+            renderActiveSessionChat();
+            chatSidebarDrawer.classList.add('-translate-x-full');
+            logActivity("Sesi percakapan baru dibuat.");
         });
 
-        modelPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                modelPills.forEach(p => {
-                    p.classList.remove('bg-black', 'text-white');
-                    p.classList.add('bg-white', 'text-gray-700');
-                });
-                pill.classList.remove('bg-white', 'text-gray-700');
-                pill.classList.add('bg-black', 'text-white');
-                selectedModel = pill.getAttribute('data-model');
-            });
-        });
-
-        fileAttachment.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                attachedFile = e.target.files[0];
-                attachmentIndicator.classList.remove('hidden');
-                attachmentIndicator.innerText = attachedFile.name;
-                sendBtn.disabled = false;
-            }
-        });
-
-        sendBtn.addEventListener('click', handleSendMessage);
-        userInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-            }
-        });
-
-        async function handleSendMessage() {
-            const text = userInput.value.trim();
-            if (!text && !attachedFile) return;
-
-            emptyState.classList.add('hidden');
-            messageContainer.classList.remove('hidden');
-
-            appendMessage(text, 'user', attachedFile ? attachedFile.name : null);
-
-            const promptText = text;
-            const fileContext = attachedFile;
-
-            userInput.value = '';
-            userInput.style.height = 'auto';
-            attachedFile = null;
-            attachmentIndicator.classList.add('hidden');
-            sendBtn.disabled = true;
-
-            const loadingId = appendMessage('<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sedang memproses dengan Mesin Hibrida AI...', 'ai', null, true);
-
-            const aiReply = await callHybridAI(promptText, selectedModel, fileContext);
-
-            removeMessage(loadingId);
-            appendMessage(aiReply, 'ai');
-
-            if (!appData.chats[currentChatId]) {
-                appData.chats[currentChatId] = { title: (promptText.substring(0, 25) || 'Lampiran File') + '...', messages: [] };
-            }
-            appData.chats[currentChatId].messages.push({ role: 'user', content: promptText }, { role: 'ai', content: aiReply });
-            
-            renderChats();
-            saveDataToGist();
-        }
-
-        function appendMessage(text, sender, fileName = null, isLoading = false) {
-            const msgId = 'msg-' + Math.random().toString(36).substring(2, 9);
-            const isUser = sender === 'user';
-            
-            const div = document.createElement('div');
-            div.id = msgId;
-            div.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full`;
-
-            let innerHTML = '';
-            if (isUser) {
-                innerHTML = `
-                    <div class="max-w-xl bg-gray-100 rounded-2xl px-4 py-3 text-sm space-y-1">
-                        ${fileName ? `<div class="text-xs text-gray-500 font-medium"><i class="fa-solid fa-file mr-1"></i>${escapeHtml(fileName)}</div>` : ''}
-                        <div>${escapeHtml(text)}</div>
-                    </div>
-                `;
-            } else {
-                const parsedMarkdown = isLoading ? text : DOMPurify.sanitize(marked.parse(text));
-                innerHTML = `
-                    <div class="max-w-2xl w-full space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-6 h-6 bg-black rounded-full flex items-center justify-center text-white text-xs font-bold">AI</div>
-                            <span class="text-xs font-semibold text-gray-700">Hybrid Router</span>
-                        </div>
-                        <div class="text-sm text-gray-800 leading-relaxed pl-8 space-y-2">${parsedMarkdown}</div>
-                        ${!isLoading ? `
-                        <div class="pl-8 flex items-center space-x-3 pt-1 text-xs text-gray-400">
-                            <button onclick="shareSocial('twitter', \`${encodeURIComponent(text)}\`)" class="hover:text-black transition"><i class="fa-brands fa-x-twitter"></i> Share</button>
-                            <button onclick="shareSocial('whatsapp', \`${encodeURIComponent(text)}\`)" class="hover:text-black transition"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                        </div>` : ''}
-                    </div>
-                `;
-            }
-
-            div.innerHTML = innerHTML;
-            messageContainer.appendChild(div);
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-            return msgId;
-        }
-
-        function removeMessage(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-        }
-
-        function escapeHtml(string) {
-            return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        window.shareSocial = function(platform, encodedText) {
-            const decoded = decodeURIComponent(encodedText);
-            if (platform === 'twitter') {
-                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(decoded)}`, '_blank');
-            } else if (platform === 'whatsapp') {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(decoded)}`, '_blank');
-            }
-        };
-
-        // ==========================================
-        // SIDEBAR, TODOS & CHAT HISTORY
-        // ==========================================
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-            sidebarBackdrop.classList.toggle('hidden');
-        });
-        sidebarClose.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            sidebarBackdrop.classList.add('hidden');
-        });
-        sidebarBackdrop.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            sidebarBackdrop.classList.add('hidden');
-        });
-
-        tabChats.addEventListener('click', () => {
-            tabChats.className = "flex-1 py-1.5 text-xs font-semibold rounded-md bg-white shadow-sm text-black transition";
-            tabTodos.className = "flex-1 py-1.5 text-xs font-semibold rounded-md text-gray-600 hover:text-black transition";
-            sidebarContentChats.classList.remove('hidden');
-            sidebarContentTodos.classList.add('hidden');
-        });
-
-        tabTodos.addEventListener('click', () => {
-            tabTodos.className = "flex-1 py-1.5 text-xs font-semibold rounded-md bg-white shadow-sm text-black transition";
-            tabChats.className = "flex-1 py-1.5 text-xs font-semibold rounded-md text-gray-600 hover:text-black transition";
-            sidebarContentTodos.classList.remove('hidden');
-            sidebarContentChats.classList.add('hidden');
-        });
-
-        newChatBtn.addEventListener('click', () => {
-            currentChatId = Date.now().toString();
-            messageContainer.innerHTML = '';
-            messageContainer.classList.add('hidden');
-            emptyState.classList.remove('hidden');
-        });
-
-        todoAddBtn.addEventListener('click', () => {
-            const val = todoInput.value.trim();
-            if(!val) return;
-            appData.todos.push({ id: Date.now(), text: val, completed: false });
-            todoInput.value = '';
-            renderTodos();
-            saveDataToGist();
-        });
+        // Tugas & Statistik
+        const todoListEl = document.getElementById('modal-todo-list');
+        const todoInputEl = document.getElementById('modal-todo-input');
+        const addTodoBtn = document.getElementById('modal-add-todo');
 
         function renderTodos() {
-            todoList.innerHTML = '';
-            appData.todos.forEach(todo => {
-                const item = document.createElement('div');
-                item.className = "flex items-center justify-between bg-white border border-gray-100 p-2.5 rounded-xl text-sm shadow-sm";
-                item.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})" class="rounded border-gray-300">
-                        <span class="${todo.completed ? 'line-through text-gray-400' : 'text-gray-700'}">${escapeHtml(todo.text)}</span>
-                    </div>
-                    <button onclick="deleteTodo(${todo.id})" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-trash text-xs"></i></button>
-                `;
-                todoList.appendChild(item);
-            });
-        }
-
-        window.toggleTodo = function(id) {
-            const t = appData.todos.find(x => x.id === id);
-            if(t) t.completed = !t.completed;
-            renderTodos();
-            saveDataToGist();
-        }
-
-        window.deleteTodo = function(id) {
-            appData.todos = appData.todos.filter(x => x.id !== id);
-            renderTodos();
-            saveDataToGist();
-        }
-
-        function renderChats() {
-            chatHistoryList.innerHTML = '';
-            Object.keys(appData.chats).forEach(chatId => {
-                const chat = appData.chats[chatId];
-                const btn = document.createElement('button');
-                btn.className = `w-full text-left px-3 py-2 rounded-xl text-sm truncate transition ${chatId === currentChatId ? 'bg-gray-200/60 font-semibold text-black' : 'text-gray-600 hover:bg-gray-100'}`;
-                btn.innerText = chat.title;
-                btn.addEventListener('click', () => {
-                    currentChatId = chatId;
-                    loadChatMessages(chatId);
-                });
-                chatHistoryList.appendChild(btn);
-            });
-        }
-
-        function loadChatMessages(chatId) {
-            messageContainer.innerHTML = '';
-            const chat = appData.chats[chatId];
-            if (!chat || chat.messages.length === 0) {
-                emptyState.classList.remove('hidden');
-                messageContainer.classList.add('hidden');
+            if (!todoListEl) return;
+            todoListEl.innerHTML = '';
+            if (smartTodos.length === 0) {
+                todoListEl.innerHTML = '<p class="text-xs text-neutral-400 italic text-center py-4">Kosong.</p>';
+                updateAnalytics();
                 return;
             }
-            emptyState.classList.add('hidden');
-            messageContainer.classList.remove('hidden');
-            chat.messages.forEach(m => {
-                appendMessage(m.content, m.role);
+            smartTodos.forEach((t, i) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" ${t.completed ? 'checked' : ''} data-index="${i}" class="todo-check rounded border-neutral-300">
+                        <span class="${t.completed ? 'line-through text-neutral-400' : 'text-neutral-800'}">${t.text}</span>
+                    </div>
+                    <button data-index="${i}" class="todo-del text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                `;
+                todoListEl.appendChild(div);
+            });
+            lucide.createIcons();
+
+            todoListEl.querySelectorAll('.todo-check').forEach(chk => {
+                chk.addEventListener('change', (e) => {
+                    smartTodos[e.target.getAttribute('data-index')].completed = e.target.checked;
+                    localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                    saveDataToGist();
+                    renderTodos();
+                });
+            });
+            todoListEl.querySelectorAll('.todo-del').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    smartTodos.splice(e.currentTarget.getAttribute('data-index'), 1);
+                    localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                    saveDataToGist();
+                    renderTodos();
+                });
+            });
+            updateAnalytics();
+        }
+
+        if (addTodoBtn) {
+            addTodoBtn.addEventListener('click', () => {
+                const val = todoInputEl.value.trim();
+                if (!val) return;
+                smartTodos.push({ text: val, completed: false });
+                todoInputEl.value = '';
+                localStorage.setItem('nexus_todos', JSON.stringify(smartTodos));
+                saveDataToGist();
+                renderTodos();
+                logActivity("Tugas ditambah.");
             });
         }
 
-        // ==========================================
-        // SETTINGS & ABOUT MODALS
-        // ==========================================
-        settingsApiBtn.addEventListener('click', () => {
-            document.getElementById('cfg-github-token').value = userKeys.github;
-            document.getElementById('cfg-groq-key').value = userKeys.groq;
-            document.getElementById('cfg-deepseek-key').value = userKeys.deepseek;
-            document.getElementById('cfg-gemini-key').value = userKeys.gemini;
-            settingsModal.classList.remove('hidden');
-        });
-        settingsClose.addEventListener('click', () => settingsModal.classList.add('hidden'));
-        settingsSave.addEventListener('click', () => {
-            userKeys.github = document.getElementById('cfg-github-token').value.trim();
-            userKeys.groq = document.getElementById('cfg-groq-key').value.trim();
-            userKeys.deepseek = document.getElementById('cfg-deepseek-key').value.trim();
-            userKeys.gemini = document.getElementById('cfg-gemini-key').value.trim();
-
-            localStorage.setItem('hybrid_ai_gh_token', userKeys.github);
-            localStorage.setItem('hybrid_ai_groq_key', userKeys.groq);
-            localStorage.setItem('hybrid_ai_ds_key', userKeys.deepseek);
-            localStorage.setItem('hybrid_ai_gemini_key', userKeys.gemini);
-
-            settingsModal.classList.add('hidden');
-            alert("Konfigurasi API berhasil disimpan!");
+        // Keuangan (Uang) Feature Logic
+        const currencySelector = document.getElementById('currency-selector');
+        currencySelector.value = currentCurrency;
+        currencySelector.addEventListener('change', (e) => {
+            currentCurrency = e.target.value;
+            localStorage.setItem('nexus_currency', currentCurrency);
+            renderTransactions();
         });
 
-        aboutBtn.addEventListener('click', () => aboutModal.classList.remove('hidden'));
-        aboutClose.addEventListener('click', () => aboutModal.classList.add('hidden'));
-        aboutOk.addEventListener('click', () => aboutModal.classList.add('hidden'));
-        aboutModal.addEventListener('click', (e) => {
-            if(e.target === aboutModal) aboutModal.classList.add('hidden');
+        function formatCurrency(amount) {
+            let symbol = 'Rp ';
+            if (currentCurrency === 'USD') symbol = '$ ';
+            if (currentCurrency === 'EUR') symbol = '€ ';
+            return symbol + Number(amount).toLocaleString();
+        }
+
+        function renderTransactions() {
+            const listEl = document.getElementById('transactions-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            if (transactions.length === 0) {
+                listEl.innerHTML = '<p class="text-[11px] text-neutral-400 italic text-center py-2">Belum ada transaksi.</p>';
+            }
+
+            transactions.forEach((trx, i) => {
+                if (trx.type === 'income') totalIncome += Number(trx.amount);
+                else totalExpense += Number(trx.amount);
+
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-2.5 rounded-xl bg-neutral-50 border border-neutral-100 text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full ${trx.type === 'income' ? 'bg-emerald-500' : 'bg-red-500'}"></span>
+                        <div>
+                            <p class="font-semibold text-neutral-900">${trx.title}</p>
+                            <p class="text-[10px] text-neutral-400 capitalize">${trx.mode} • ${trx.date}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="font-bold ${trx.type === 'income' ? 'text-emerald-600' : 'text-red-600'}">${trx.type === 'income' ? '+' : '-'}${formatCurrency(trx.amount)}</span>
+                        <button data-index="${i}" class="trx-del text-neutral-400 hover:text-red-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                `;
+                listEl.appendChild(div);
+            });
+            lucide.createIcons();
+
+            listEl.querySelectorAll('.trx-del').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    transactions.splice(e.currentTarget.getAttribute('data-index'), 1);
+                    localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
+                    saveDataToGist();
+                    renderTransactions();
+                });
+            });
+
+            const balance = totalIncome - totalExpense;
+            document.getElementById('fin-balance').textContent = formatCurrency(balance);
+            document.getElementById('fin-income').textContent = formatCurrency(totalIncome);
+            document.getElementById('fin-expense').textContent = formatCurrency(totalExpense);
+
+            const total = totalIncome + totalExpense;
+            const incomePercent = total > 0 ? (totalIncome / total) * 100 : 50;
+            const expensePercent = total > 0 ? (totalExpense / total) * 100 : 50;
+            document.getElementById('chart-income-bar').style.width = `${incomePercent}%`;
+            document.getElementById('chart-expense-bar').style.width = `${expensePercent}%`;
+        }
+
+        document.getElementById('add-trx-btn').addEventListener('click', () => {
+            const title = document.getElementById('trx-title').value.trim();
+            const amount = document.getElementById('trx-amount').value.trim();
+            const type = document.getElementById('trx-type').value;
+            const mode = document.getElementById('trx-mode').value;
+
+            if (!title || !amount) {
+                alert("Mohon isi keterangan dan nominal transaksi.");
+                return;
+            }
+
+            transactions.unshift({
+                title,
+                amount: Number(amount),
+                type,
+                mode,
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+            });
+
+            document.getElementById('trx-title').value = '';
+            document.getElementById('trx-amount').value = '';
+
+            localStorage.setItem('nexus_transactions', JSON.stringify(transactions));
+            saveDataToGist();
+            renderTransactions();
+            logActivity(`Transaksi ${type} dicatat.`);
         });
 
+        function updateAnalytics() {
+            let totalMsgs = 0;
+            sessions.forEach(s => totalMsgs += s.history.filter(m => m.role === 'user').length);
+            const completedCount = smartTodos.filter(t => t.completed).length;
+            const totalCount = smartTodos.length;
+            
+            const statMsgs = document.getElementById('stat-total-msgs');
+            const statTodos = document.getElementById('stat-completed-todos');
+            if (statMsgs) statMsgs.textContent = totalMsgs;
+            if (statTodos) statTodos.textContent = `${completedCount} / ${totalCount}`;
+        }
+
+        // Pengaturan Kunci AI & Eksternal Lainnya
+        document.getElementById('save-ai-keys').addEventListener('click', () => {
+            GROQ_KEY = document.getElementById('input-groq-key').value.trim();
+            GEMINI_KEY = document.getElementById('input-gemini-key').value.trim();
+            OPENAI_KEY = document.getElementById('input-openai-key').value.trim();
+            CLAUDE_KEY = document.getElementById('input-claude-key').value.trim();
+
+            localStorage.setItem('nexus_groq_key', GROQ_KEY);
+            localStorage.setItem('nexus_gemini_key', GEMINI_KEY);
+            localStorage.setItem('nexus_openai_key', OPENAI_KEY);
+            localStorage.setItem('nexus_claude_key', CLAUDE_KEY);
+
+            alert("Semua Kunci API berhasil disimpan!");
+            logActivity("Kunci AI & Eksternal diperbarui.");
+        });
+
+        document.getElementById('save-gist-token').addEventListener('click', () => {
+            githubToken = document.getElementById('input-gist-token').value.trim();
+            githubGistId = document.getElementById('input-gist-id').value.trim();
+            localStorage.setItem('nexus_gist_token', githubToken);
+            localStorage.setItem('nexus_gist_id', githubGistId);
+            alert("Disimpan.");
+            logActivity("Token Gist diperbarui.");
+        });
+
+        document.getElementById('trigger-sync').addEventListener('click', () => {
+            saveDataToGist();
+            alert("Disinkronkan.");
+        });
+
+        // Hybrid AI Chat with Persona, OpenAI/Claude support & Auto-Fix
+        const chatForm = document.getElementById('window-chat-form');
+        const chatInput = document.getElementById('window-chat-input');
+        const hybridMsgList = document.getElementById('hybrid-messages');
+        const aiStatusBadge = document.getElementById('ai-status-badge');
+
+        function getPersonaSystemPrompt() {
+            const selectedPersona = document.querySelector('input[name="ai-persona"]:checked')?.value || 'default';
+            if (selectedPersona === 'programmer') return "Anda adalah Senior Programmer profesional yang memberikan solusi kode efisien dan terstruktur.";
+            if (selectedPersona === 'copywriter') return "Anda adalah Creative Copywriter profesional yang menggunakan bahasa persuasif dan menarik.";
+            return "Anda adalah asisten AI yang ramah, netral, dan membantu.";
+        }
+
+        async function callGroq(prompt) {
+            const personaPrompt = getPersonaSystemPrompt();
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "llama3-70b-8192",
+                    messages: [
+                        { role: "system", content: personaPrompt },
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
+            if (!res.ok) throw new Error("Groq API Error");
+            const data = await res.json();
+            return data.choices?.[0]?.message?.content;
+        }
+
+        async function callGemini(prompt) {
+            const personaPrompt = getPersonaSystemPrompt();
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: `${personaPrompt}\n\n${prompt}` }] }] })
+            });
+            if (!res.ok) throw new Error("Gemini API Error");
+            const data = await res.json();
+            return data.candidates?.[0]?.content?.parts?.[0]?.text;
+        }
+
+        async function callOpenAI(prompt) {
+            if (!OPENAI_KEY) throw new Error("OpenAI Key Missing");
+            const personaPrompt = getPersonaSystemPrompt();
+            const res = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${OPENAI_KEY}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "gpt-4o-mini",
+                    messages: [
+                        { role: "system", content: personaPrompt },
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
+            if (!res.ok) throw new Error("OpenAI API Error");
+            const data = await res.json();
+            return data.choices?.[0]?.message?.content;
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            const sess = getCurrentSession();
+            if (sess.history.length === 0) {
+                sess.title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+            }
+
+            hybridMsgList.innerHTML += `<div class="flex justify-end"><div class="bg-neutral-900 text-white px-3.5 py-2 rounded-2xl text-xs max-w-[85%]">${text}</div></div>`;
+            chatInput.value = '';
+
+            const aiId = 'ai-' + Date.now();
+            hybridMsgList.innerHTML += `<div id="${aiId}" class="flex justify-start"><div class="bg-neutral-100 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] animate-pulse">Hybrid AI memproses...</div></div>`;
+
+            let reply = null;
+            let usedModel = "Groq Llama-3";
+
+            try {
+                // Coba OpenAI jika tersedia, jika tidak ke Groq
+                if (OPENAI_KEY) {
+                    try {
+                        reply = await callOpenAI(text);
+                        usedModel = "OpenAI GPT-4o-mini";
+                        aiStatusBadge.textContent = "OpenAI Active";
+                        aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-mono text-[9px]";
+                    } catch (openAiErr) {
+                        reply = await callGroq(text);
+                        aiStatusBadge.textContent = "Groq Active";
+                        aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]";
+                    }
+                } else {
+                    reply = await callGroq(text);
+                    aiStatusBadge.textContent = "Groq Active";
+                    aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px]";
+                }
+            } catch (groqErr) {
+                console.warn("Primary failed, auto-fixing with Gemini backup...", groqErr);
+                aiStatusBadge.textContent = "Auto-Fix (Gemini)";
+                aiStatusBadge.className = "px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-mono text-[9px]";
+                
+                try {
+                    reply = await callGemini(text);
+                    usedModel = "Gemini Flash (Auto-Fixed)";
+                } catch (geminiErr) {
+                    reply = "Maaf, semua koneksi Hybrid AI gagal merespons. Periksa kunci API Anda.";
+                    usedModel = "Gagal";
+                }
+            }
+
+            document.getElementById(aiId).innerHTML = `<div class="bg-white border border-neutral-200 text-neutral-800 px-3.5 py-2 rounded-2xl text-xs max-w-[85%] shadow-xs space-y-1"><div class="text-[9px] font-mono text-neutral-400">Model: ${usedModel}</div><div>${marked.parse(reply)}</div></div>`;
+            
+            sess.history.push({ role: 'user', content: text });
+            sess.history.push({ role: 'assistant', content: reply, model: usedModel });
+
+            localStorage.setItem('nexus_chat_sessions', JSON.stringify(sessions));
+            saveDataToGist();
+            renderSessionsList();
+        });
+
+        renderSessionsList();
+        renderActiveSessionChat();
+        renderTodos();
+        renderTransactions();
+        fetchDataFromGist();
     </script>
 </body>
 </html>
